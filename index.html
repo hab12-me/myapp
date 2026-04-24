@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: ; media-src 'self' file: blob:; connect-src 'self'">
+    <title>GoBingo - Ethiopia's Best Bingo | Dark Blue Buttons</title>
+    
+    <!-- External Libraries -->
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1975A3;
+            --secondary-color: #0047BB;
+            --dark-blue-btn: #0a2f6c;
+            --dark-blue-hover: #0c3d8a;
+            --dark-blue-active: #06214e;
+            --background-dark: #1e2229;
+            --text-color: #444;
+            --accent-green: #28a745;
+            --accent-red: #dc3545;
+            --accent-yellow: #ffde21;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--background-dark);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            transition: all 0.2s ease;
+            -webkit-user-select: none;
+            -webkit-app-region: no-drag;
+        }
+        
+        nav { -webkit-app-region: drag; }
+        
+        nav a, nav img, .logout, .menu, .resolution-wrapper, .resolution-toggle, 
+        .btnbingo, .btnstart, .btnshuffle, .goodbingo, .reload-button, .login-btn,
+        #playTopBtn, .resolution-toggle, .next button, #pageButtons button, 
+        .btn-close, .modal-content .btnstart, .modal-content .goodbingo, #mybtn, 
+        .btnbingo#bingoo, .btnbingo#newgame, .btnshuffle, .goodbingo#goodbingo, 
+        .goodbingo#notbingo, .goodbingo#addbingo, .goodbingo#addbingo1, 
+        .goodbingo#newbingo, #newGameModal button, .btnbingo#mycheck, .lock-btn,
+        input, select, textarea, .card-number, .numbox, .txtbox {
+            -webkit-app-region: no-drag;
+        }
+
+        .click-hide-area {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 999; display: none; background: transparent;
+        }
+        .click-hide-area.active { display: block; }
+
+        .game-container { transition: transform 0.25s ease, width 0.25s ease; transform-origin: top center; width: 100%; }
+        body.resolution-xs .game-container { transform: scale(0.65); width: 153.85%; margin-left: -26.92%; }
+        body.resolution-small .game-container { transform: scale(0.8); width: 125%; margin-left: -12.5%; }
+        body.resolution-medium .game-container { transform: scale(1); width: 100%; margin-left: 0; }
+        body.resolution-large .game-container { transform: scale(1.2); width: 83.33%; margin-left: 8.33%; }
+        body.resolution-xl .game-container { transform: scale(1.45); width: 68.97%; margin-left: 15.52%; }
+
+        nav { position: fixed; height: 80px; width: 100%; background: #fff; border-color: var(--primary-color); box-shadow: 5px 5px 6px rgb(50 50 50/55%); padding-bottom: 15px; display: inline-block; top: 0; color: var(--secondary-color); z-index: 1000; transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: top center; }
+        nav.nav-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        .imglogo { height: 80px; width: auto; max-width: 200px; margin-left: 3%; cursor: pointer; transition: opacity 0.2s, transform 0.2s; object-fit: contain; }
+        .imglogo:hover { opacity: 0.85; transform: scale(1.02); }
+        
+        .logout { text-decoration: none; color: #444; float: right; margin-top: 10px; margin-right: 140px; letter-spacing: 1px; font-weight: bolder; cursor: pointer; }
+        .user_img { width: 40px; height: 40px; border-radius: 50%; }
+        .menu { float: right; list-style: none; text-decoration: none; background: #f6f7f9; opacity: 0.9; position: absolute; left: 85%; display: none; min-width: 250px; min-height: 120px; }
+        .menu a { color: #828282; padding: 10px; display: block; cursor: pointer; }
+
+        .resolution-wrapper { position: fixed; top: 15px; right: 15px; z-index: 1100; }
+        .resolution-toggle { background: linear-gradient(135deg, #0a2f6c, #0047BB); border: none; border-radius: 40px; padding: 8px 18px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .resolution-toggle:hover { transform: scale(1.05); background: linear-gradient(135deg, #0c3d8a, #0055dd); }
+        .resolution-toggle i { font-size: 16px; }
+        .resolution-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow: hidden; min-width: 150px; display: none; flex-direction: column; z-index: 1101; }
+        .resolution-dropdown.show { display: flex; }
+        .resolution-option { padding: 10px 18px; color: #333; font-weight: 500; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        .resolution-option:last-child { border-bottom: none; }
+        .resolution-option:hover { background: #1975A3; color: white; }
+        .resolution-option.active { background: #0047BB; color: white; }
+        .resolution-option i { width: 20px; font-size: 14px; }
+
+        .section { display: none; padding-top: 100px; }
+        .section.active { display: block; }
+
+        .column1 { height: 18rem; display: flex; justify-content: space-around; margin-top: 20px; }
+        .col1 { max-width: 25%; border: solid 1px #828282; height: 100%; }
+        .col2 { width: 24%; border: solid 1px #828282; height: 100%; }
+        .col3 { text-align: left; width: 37%; border: solid 1px #828282; height: 100%; background: linear-gradient(90deg, rgba(22,11,209,1) 0%, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 0%, rgba(6,49,113,1) 8%, rgba(9,82,190,1) 47%, rgba(6,44,102,1) 77%, rgba(3,14,34,1) 100%, rgba(9,131,236,1) 100%); }
+        .col4 { width: 26%; border: solid 1px #ccc; border: none; height: 100%; background: linear-gradient(90deg, rgba(22,11,209,1) 0%, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 0%, rgba(6,49,113,1) 8%, rgba(9,82,190,1) 47%, rgba(6,44,102,1) 77%, rgba(3,14,34,1) 100%, rgba(9,131,236,1) 100%); }
+
+        .ball2 { display: inline-block; width: 250px; height: 250px; border-radius: 50%; position: relative; background: radial-gradient(circle at 100px 100px, #5cabff, #000); box-shadow: 0px 5px 6px rgb(50 50 50/55%); }
+        .ball3 { position: absolute; width: 94%; height: 94%; margin: 3%; background: white; border-radius: 50%; }
+        .ball4 { position: absolute; width: 94%; height: 94%; margin: 3%; border-radius: 50%; background: radial-gradient(circle at 100px 100px, #5cabff, #000); }
+        .ball5 { position: absolute; width: 50%; height: 50%; margin: 25%; background: white; border-radius: 50%; animation: zoom-in-zoom-out 4s ease infinite; }
+        @keyframes zoom-in-zoom-out { 50% { transform: scale(1, 1); } 25% { transform: scale(1.5, 1.5); } 0% { transform: scale(1, 1); } }
+        .num { position: relative; font-weight: bold; text-align: center; font-size: 42px; margin-top: 20px; color: #000; }
+        .bingo-call { width: 5.6rem; height: 5.6rem; border-radius: 50%; border: none; text-align: center; background: linear-gradient(90deg, rgba(22,11,209,1) 0%, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 0%, rgba(6,49,113,1) 8%, rgba(9,82,190,1) 47%, rgba(6,44,102,1) 77%, rgba(3,14,34,1) 100%, rgba(9,131,236,1) 100%); color: white; z-index: 2; margin-left: 0.9rem; font-size: 32px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .lastcall { font-size: 2.6rem; font-weight: 900; color: #fff; text-align: center; }
+        .prize { font-size: 4.6rem; font-weight: 900; color: #fff; text-align: center; }
+        .callus { width: 100%; height: 70px; }
+
+        #bingoTable { border-collapse: collapse; width: 100%; max-width: 600px; margin: auto; background: #fff; }
+        #bingoTable th { background: radial-gradient(circle at 100px 100px, #5cabff, #000); color: white; border: 1px solid black; width: 20%; height: 2.8rem; font-size: 24px; text-align: center; padding: 0; }
+        #bingoTable td { border: 1px solid black; width: 20%; height: 3rem; text-align: center; position: relative; font-size: 20px; font-weight: bold; cursor: pointer; }
+        #bingoTable tbody tr:nth-child(odd) td { background-color: #fff; color: black; }
+        #bingoTable tbody tr:nth-child(even) td { background-color: #5cabff; color: black; }
+        .matched { background-color: red !important; color: white !important; border-radius: 50%; }
+        .called-number { background: linear-gradient(135deg, #0066ff, #0044cc) !important; color: white !important; transform: scale(1.05); box-shadow: 0 0 15px rgba(0,102,255,0.5); }
+
+        .column2 { margin-top: 20px; }
+        .brow, .irow { display: flex; align-items: baseline; justify-content: space-around; width: 100%; margin: 10px 0; }
+        .txtbox { width: 4.4rem; height: 4.4rem; color: #fff; text-align: center; font-weight: bold; font-size: 2.3rem; margin: 0; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
+        .b { background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); }
+        .i { background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(121,9,13,1) 100%, rgba(0,212,255,1) 100%); }
+        .n { background: linear-gradient(178.6deg, rgb(20, 36, 50) 11.8%, rgb(124, 143, 161) 83.8%); }
+        .g { background: linear-gradient(90deg, rgba(36,26,0,1) 0%, rgba(91,60,6,1) 1%, rgba(232,148,22,1) 100%, rgba(0,212,255,1) 100%); }
+        .o { background: linear-gradient(178.6deg, rgb(20, 36, 50) 11.8%, rgb(124, 143, 161) 83.8%); }
+        
+        .callb { display: flex; justify-content: space-between; flex-wrap: wrap; width: 90%; }
+        .numbox { 
+            width: 4rem; height: 4rem; background-color: #555; color: #f2f2f2; text-align: center; 
+            font-weight: bold; font-size: 1.9rem; margin: 4px; display: flex; align-items: center; 
+            justify-content: center; border-radius: 50%; cursor: pointer; transition: all 0.2s ease;
+            position: relative;
+        }
+        .numbox:hover { background: radial-gradient(circle, #66cc66, #28a745); transform: scale(1.1); }
+        .callnum { 
+            background: linear-gradient(135deg, #ff8800, #ff4400) !important; 
+            color: white !important; 
+            animation: numberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            z-index: 10 !important;
+            box-shadow: 0 0 25px rgba(255,136,0,0.8), 0 0 50px rgba(255,68,0,0.5) !important;
+            border: 3px solid #fff !important;
+        }
+        @keyframes numberPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.6); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes ballPulse { 0% { transform: scale(1); } 50% { transform: scale(1.4); color: #ffcc00; } 100% { transform: scale(1); } }
+        .ball-pulse { animation: ballPulse 0.4s cubic-bezier(0.34, 1.2, 0.64, 1) !important; }
+
+        .btnbingo, .btnstart, .btnshuffle, .goodbingo, .reload-button, .login-btn, #playTopBtn, .resolution-toggle, .next button, #pageButtons button, .btn-close, .modal-content .btnstart, .modal-content .goodbingo, #mybtn, .btnbingo#bingoo, .btnbingo#newgame, .btnshuffle, .goodbingo#goodbingo, .goodbingo#notbingo, .goodbingo#addbingo, .goodbingo#addbingo1, .goodbingo#newbingo, #newGameModal button, .btnbingo#mycheck, .lock-btn { 
+            background: #0a2f6c !important; 
+            color: white !important; 
+            border: none !important; 
+            font-weight: bold !important; 
+            transition: all 0.25s ease !important; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important; 
+            cursor: pointer !important;
+        }
+        
+        #bingoo, #newgame, #shuffle, #mycheck, .btnbingo[onclick*="reg-section"] { font-size: 1.4rem !important; padding: 12px 28px !important; min-width: 140px !important; border-radius: 50px !important; letter-spacing: 1px !important; }
+        #playTopBtn { font-size: 1.5rem !important; padding: 12px 30px !important; min-width: 130px !important; border-radius: 60px !important; }
+        .btnbingo[onclick*="reg-section"] { font-size: 1.3rem !important; padding: 12px 24px !important; min-width: 160px !important; }
+        .btnshuffle { font-size: 1.4rem !important; padding: 12px 28px !important; min-width: 140px !important; }
+        .btnbingo#mycheck { font-size: 1.3rem !important; padding: 12px 24px !important; min-width: 120px !important; }
+        
+        #bingoo:hover, #newgame:hover, #shuffle:hover, #mycheck:hover, .btnbingo[onclick*="reg-section"]:hover, #playTopBtn:hover { background: #0c3d8a !important; transform: translateY(-3px) scale(1.03) !important; box-shadow: 0 6px 16px rgba(0,0,0,0.4) !important; }
+        .btnbingo:hover, .btnstart:hover, .btnshuffle:hover, .goodbingo:hover, .reload-button:hover, .login-btn:hover, #playTopBtn:hover, .resolution-toggle:hover, .next button:hover, #pageButtons button:hover, .btnbingo#bingoo:hover, .btnbingo#newgame:hover, .btnshuffle:hover, .goodbingo#goodbingo:hover, .goodbingo#notbingo:hover, .goodbingo#addbingo:hover, .goodbingo#addbingo1:hover, .goodbingo#newbingo:hover, #newGameModal button:hover, .btnbingo#mycheck:hover, .lock-btn:hover { background: #0c3d8a !important; transform: translateY(-2px) scale(1.02) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important; }
+        .btnbingo:active, .btnstart:active, .btnshuffle:active, .goodbingo:active, #playTopBtn:active, .resolution-toggle:active, .lock-btn:active { background: #06214e !important; transform: translateY(1px) !important; }
+        .btnbingo:disabled, .btnshuffle:disabled, .goodbingo:disabled, .lock-btn:disabled { background: #3a5a8a !important; opacity: 0.6; transform: none !important; cursor: not-allowed !important; }
+        button[class*="btn"] { background-color: #0a2f6c !important; }
+        input[type="range"] { accent-color: #0a2f6c; }
+        
+        .recent-calls-horizontal { display: flex; flex-direction: row; justify-content: space-evenly; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; margin-bottom: 20px; padding: 10px; }
+        .recent-calls-horizontal .bingo-call { margin-left: 0; margin-right: 0; width: 5rem; height: 5rem; font-size: 28px; }
+        #canvas { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; }
+        .game-actions { display: flex; flex-wrap: wrap; gap: 18px; width: 100%; align-items: center; margin-top: 20px; padding: 20px; justify-content: flex-start; }
+
+        /* UPDATED: 14 columns grid, NO SCROLL, all 154 cards visible */
+        .container { 
+            display: grid;
+            grid-template-columns: repeat(14, 1fr);
+            gap: 6px;
+            padding: 15px 10px;
+            max-height: none;
+            overflow-y: visible;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .container::-webkit-scrollbar { display: none; }
+        
+        .card-number { 
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            min-width: 48px;
+            max-width: 65px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0a2f6c, #0047BB); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+            border: 3px solid transparent; 
+            user-select: none; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+            position: relative; 
+            overflow: hidden;
+        }
+        .card-number::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); opacity: 0; transition: opacity 0.3s; }
+        .card-number:hover::before { opacity: 1; }
+        .card-number:hover { transform: scale(1.12); background: linear-gradient(135deg, #0c3d8a, #0055dd); box-shadow: 0 8px 25px rgba(0,71,187,0.6); z-index: 10; }
+        .card-number.selected { background: linear-gradient(135deg, #28a745, #20c997); border-color: #fff; box-shadow: 0 0 25px rgba(40,167,69,0.8), 0 8px 20px rgba(0,0,0,0.4); transform: scale(1.08); animation: pulseSelect 0.4s ease; }
+        .card-number.selected:hover { transform: scale(1.15); }
+        @keyframes pulseSelect { 0% { box-shadow: 0 0 0 0 rgba(40,167,69,0.8); } 70% { box-shadow: 0 0 0 15px rgba(40,167,69,0); } 100% { box-shadow: 0 0 0 0 rgba(40,167,69,0); } }
+        .card-number.disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        
+        .balls-line { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+        
+        #tablereg { width: 100%; border-collapse: collapse; margin: 20px 0; background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; }
+        #tablereg th, #tablereg td { padding: 14px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 1.1rem; }
+        #tablereg th { background: linear-gradient(135deg, #0a2f6c, #0047BB); color: white; font-size: 1.2rem; }
+        #tablereg tr:hover { background: rgba(255,255,255,0.1); }
+        .remove-card { background: #dc3545; color: white; border: none; padding: 6px 18px; border-radius: 20px; cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: all 0.2s; box-shadow: 0 2px 8px rgba(220,53,69,0.4); }
+        .remove-card:hover { background: #c82333; transform: scale(1.08); box-shadow: 0 4px 15px rgba(220,53,69,0.6); }
+        .selected-count { text-align: center; font-size: 1.4rem; margin: 15px 0; color: #28a745; font-weight: bold; background: rgba(40,167,69,0.15); padding: 10px 25px; border-radius: 30px; border: 2px solid #28a745; }
+        
+        .history-table th { background: #0a2f6c; color: white; }
+        .status-pending { color: #ffde21; font-weight: bold; }
+        .status-finished { color: #28a745; font-weight: bold; }
+        .status-active { color: #0047BB; font-weight: bold; }
+
+        .config-bar {
+            display: flex; flex-wrap: wrap; align-items: flex-end; gap: 15px;
+            background: rgba(10, 47, 108, 0.3); padding: 15px; border-radius: 12px;
+            margin: 15px auto 10px; max-width: 98%; border: 1px solid #0047BB;
+        }
+        .config-item { display: flex; flex-direction: column; gap: 5px; }
+        .config-item label { color: #ccc; font-size: 0.85rem; font-weight: bold; letter-spacing: 0.5px; }
+        .config-select {
+            padding: 8px 10px; border-radius: 8px; border: 1px solid #444;
+            background: #1a1e25; color: white; font-weight: bold; cursor: pointer;
+            font-size: 0.95rem; min-width: 110px;
+        }
+        .config-select:focus { outline: none; border-color: #28a745; box-shadow: 0 0 0 2px rgba(40,167,69,0.3); }
+        
+        .stake-inline-options { display: flex; gap: 5px; }
+        .stake-btn {
+            background: #0a2f6c; color: white; border: 2px solid transparent;
+            padding: 7px 10px; border-radius: 20px; font-size: 0.85rem;
+            font-weight: bold; cursor: pointer; transition: all 0.2s; min-width: 40px;
+        }
+        .stake-btn:hover { background: #0c3d8a; }
+        .stake-btn.active { background: #28a745; border-color: #fff; color: white; box-shadow: 0 0 10px rgba(40,167,69,0.4); }
+        
+        .prize-display-inline {
+            text-align: center; font-size: 1.3rem; font-weight: bold; color: #28a745;
+            margin: 5px 0 15px; background: rgba(40, 167, 69, 0.1); padding: 8px;
+            border-radius: 8px; border: 1px dashed #28a745; max-width: 98%; margin-left: auto; margin-right: auto;
+        }
+
+        #myModalcard .modal-content {
+            background: linear-gradient(135deg, #0a2f6c, #0047BB) !important;
+            border: 3px solid #5cabff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 71, 187, 0.6);
+            max-width: 90vw;
+            width: auto;
+            margin: 2vh auto;
+        }
+        #myModalcard .modal-dialog {
+            max-width: 90vw;
+            margin: 2vh auto;
+            display: flex;
+            align-items: center;
+            min-height: calc(100vh - 4vh);
+        }
+        #myModalcard .modal-header {
+            border-bottom: 2px solid #5cabff;
+            padding: 12px 18px;
+        }
+        #myModalcard .modal-title {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        #myModalcard .btn-close {
+            filter: brightness(0) invert(1);
+            padding: 0.5rem;
+            cursor: pointer !important;
+        }
+        #myModalcard .modal-body {
+            padding: 12px 18px 18px;
+            text-align: center;
+            max-height: 82vh;
+            overflow-y: auto;
+        }
+        #myModalcard .modal-body::-webkit-scrollbar { width: 6px; }
+        #myModalcard .modal-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        #myModalcard .modal-body::-webkit-scrollbar-thumb { background: #0a2f6c; border-radius: 3px; }
+        #myModalcard .modal-body::-webkit-scrollbar-thumb:hover { background: #0c3d8a; }
+        #check-status { font-size: 1.4rem; font-weight: bold; margin-bottom: 12px; min-height: 2rem; }
+        #check-status h3 { margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        .simulated-card-table { border-collapse: collapse; width: 100%; max-width: 320px; margin: 0 auto; background: #fff; border: 2px solid #0047BB; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); table-layout: fixed; }
+        .simulated-card-table th { background: radial-gradient(circle at 100px 100px, #5cabff, #000); color: white; border: 1px solid black; width: 20%; height: 2.4rem; font-size: 1.2rem; text-align: center; padding: 0; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); line-height: 1; }
+        .simulated-card-table td { border: 1px solid black; width: 20%; height: 2.6rem; text-align: center; position: relative; font-size: 1.1rem; font-weight: bold; transition: all 0.2s ease; padding: 0; line-height: 2.6rem; vertical-align: middle; }
+        .simulated-card-table tbody tr:nth-child(odd) td { background-color: #fff; color: black; }
+        .simulated-card-table tbody tr:nth-child(even) td { background-color: #5cabff; color: black; }
+        .simulated-card-table .matched { background-color: red !important; color: white !important; border-radius: 50%; font-size: 1.2rem; box-shadow: 0 0 10px rgba(220, 53, 69, 0.7); animation: pulseMatch 0.5s ease; line-height: 2.6rem; }
+        @keyframes pulseMatch { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .simulated-card-table .matched.free-space { background: linear-gradient(135deg, #ffd700, #ffaa00) !important; color: #000 !important; font-size: 1.3rem; box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+        
+        @keyframes blinkWin {
+            0%, 100% { background-color: #28a745 !important; color: white !important; box-shadow: 0 0 8px rgba(40,167,69,0.8); transform: scale(1); }
+            50% { background-color: #ffd700 !important; color: #000 !important; box-shadow: 0 0 18px rgba(255,215,0,1), 0 0 28px rgba(255,215,0,0.8); transform: scale(1.05); }
+        }
+        .blink-win { animation: blinkWin 0.8s ease-in-out infinite !important; border: 2px solid #ffd700 !important; z-index: 5; position: relative; }
+        
+        .winner-glow { animation: winnerGlow 1s ease-in-out infinite alternate; }
+        @keyframes winnerGlow { from { box-shadow: 0 0 15px rgba(40, 167, 69, 0.6); } to { box-shadow: 0 0 30px rgba(40, 167, 69, 1), 0 0 45px rgba(40, 167, 69, 0.8); } }
+        
+        .late-winner-glow { animation: lateWinnerGlow 1s ease-in-out infinite alternate; }
+        @keyframes lateWinnerGlow { from { box-shadow: 0 0 15px rgba(220, 53, 69, 0.6); } to { box-shadow: 0 0 30px rgba(220, 53, 69, 1), 0 0 45px rgba(220, 53, 69, 0.8); } }
+        
+        #myModalcard .goodbingo { margin: 4px; padding: 8px 18px; font-size: 0.95rem; border-radius: 28px; min-width: 110px; }
+        #myModalcard #bingo-btn, #myModalcard #main-buttons, #myModalcard #lock-section { margin-top: 12px; }
+        
+        .lock-btn { background: #dc3545 !important; color: white !important; font-size: 1rem !important; padding: 10px 24px !important; border-radius: 30px !important; min-width: 120px !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; }
+        .lock-btn:hover { background: #c82333 !important; transform: translateY(-2px) scale(1.02) !important; box-shadow: 0 4px 12px rgba(220,53,69,0.4) !important; }
+        .lock-btn:active { background: #bd2130 !important; transform: translateY(1px) !important; }
+        .lock-btn i { font-size: 1.1rem; }
+
+        @media (max-width: 1400px) {
+            .container { grid-template-columns: repeat(11, 1fr); }
+            .card-number { font-size: 1.1rem; }
+        }
+        @media (max-width: 1100px) {
+            .container { grid-template-columns: repeat(9, 1fr); }
+            .card-number { font-size: 1rem; }
+        }
+        @media (max-width: 768px) {
+            .column1 { flex-direction: column; height: auto; }
+            .col1, .col2, .col3, .col4 { width: 95%; margin: 10px auto; }
+            .numbox { width: 2.8rem; height: 2.8rem; font-size: 1.4rem; margin: 2px; }
+            .txtbox { width: 3.2rem; height: 3.2rem; font-size: 1.7rem; }
+            .logout { margin-right: 20px; }
+            .resolution-wrapper { top: 80px; right: 10px; }
+            #bingoo, #newgame, #shuffle, #mycheck, .btnbingo[onclick*="reg-section"] { font-size: 1.1rem !important; padding: 8px 18px !important; min-width: 110px !important; }
+            #playTopBtn { width: 100%; font-size: 1.3rem !important; padding: 10px 0 !important; }
+            .container { grid-template-columns: repeat(7, 1fr); }
+            .card-number { min-width: 40px; font-size: 0.95rem; }
+            .simulated-card-table { max-width: 280px; }
+            .simulated-card-table th { font-size: 1.1rem; height: 2.2rem; }
+            .simulated-card-table td { font-size: 1rem; height: 2.4rem; line-height: 2.4rem; }
+            .simulated-card-table .matched { font-size: 1.1rem; }
+            #check-status { font-size: 1.2rem; }
+            #myModalcard .modal-content { max-width: 95vw; margin: 1vh auto; }
+            #myModalcard .modal-body { padding: 10px 15px 15px; max-height: 78vh; }
+            #myModalcard .modal-title { font-size: 1rem; }
+            .lock-btn { font-size: 0.9rem !important; padding: 8px 18px !important; min-width: 100px !important; }
+        }
+        @media (max-width: 480px) {
+            .config-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .config-select, .stake-inline-options { width: 100%; justify-content: center; }
+            .stake-btn { flex: 1; }
+            .container { grid-template-columns: repeat(5, 1fr); }
+            .card-number { min-width: 36px; font-size: 0.85rem; }
+            .simulated-card-table { max-width: 260px; }
+            .simulated-card-table th { font-size: 1rem; height: 2rem; }
+            .simulated-card-table td { font-size: 0.95rem; height: 2.2rem; line-height: 2.2rem; }
+            .simulated-card-table .matched { font-size: 1rem; }
+            .lock-btn { font-size: 0.85rem !important; padding: 6px 14px !important; min-width: 90px !important; }
+        }
+        
+        .electron-titlebar { position: fixed; top: 0; left: 0; right: 0; height: 30px; background: linear-gradient(135deg, #0a2f6c, #0047BB); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; z-index: 2000; -webkit-app-region: drag; }
+        .electron-titlebar .title { color: white; font-size: 13px; font-weight: 500; -webkit-app-region: no-drag; }
+        .electron-titlebar .controls { display: flex; gap: 5px; -webkit-app-region: no-drag; }
+        .electron-titlebar .controls button { width: 30px; height: 30px; border: none; background: transparent; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.2s; font-size: 14px; }
+        .electron-titlebar .controls button:hover { background: rgba(255,255,255,0.2); }
+        .electron-titlebar .controls button.close:hover { background: #e81123; }
+        body.electron-platform .game-container { padding-top: 30px; }
+        body.electron-platform nav { top: 30px; }
+        
+        .error-shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .winner-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center;
+            z-index: 2000; animation: fadeIn 0.3s ease;
+        }
+        .winner-modal.hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .winner-modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 20px; padding: 30px; max-width: 500px; width: 90%;
+            border: 3px solid #ffd700; box-shadow: 0 0 50px rgba(255,215,0,0.5);
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .winner-card-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+            margin: 20px 0; background: #fff; border-radius: 10px; padding: 10px;
+        }
+        .winner-card-grid td {
+            padding: 12px; text-align: center; font-weight: bold; border: 1px solid #ddd;
+            border-radius: 5px; background: #f8f9fa;
+        }
+        .winner-card-grid .matched { background: #28a745 !important; color: white !important; }
+        .winner-close-btn {
+            background: #0a2f6c; color: white; border: none; padding: 12px 30px;
+            border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1.1rem;
+            transition: all 0.2s; margin-top: 15px;
+        }
+        .winner-close-btn:hover { background: #0c3d8a; transform: scale(1.05); }
+        .winning-pattern-badge {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000; padding: 8px 20px; border-radius: 25px;
+            font-weight: bold; display: inline-block; margin: 10px 0;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+        }
+
+        /* EXPIRATION OVERLAY STYLES */
+        #expirationOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+            color: white; text-align: center; padding: 20px;
+        }
+        #expirationOverlay.hidden { display: none !important; }
+        #expirationOverlay .icon { font-size: 4rem; color: #dc3545; margin-bottom: 20px; }
+        #expirationOverlay h2 { font-size: 2rem; margin-bottom: 15px; color: #ff6b6b; }
+        #expirationOverlay p { font-size: 1.2rem; margin: 10px 0; max-width: 500px; line-height: 1.5; }
+        #expirationOverlay .expiry-date { font-weight: bold; color: #ffd700; font-size: 1.3rem; margin: 15px 0; }
+        #expirationOverlay .contact-info { margin-top: 25px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+        #expirationOverlay .contact-info a { color: #5cabff; text-decoration: none; }
+        #expirationOverlay .contact-info a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <!-- EXPIRATION OVERLAY - Shown when license expired -->
+    <div id="expirationOverlay" class="hidden">
+        <div class="icon"><i class="fas fa-lock"></i></div>
+        <h2>⚠️ License Expired</h2>
+        <p>This GoBingo Pro license is valid for <strong>2 months</strong> from activation date.</p>
+        <p class="expiry-date">Expired on: <span id="expiryDateDisplay">--</span></p>
+        <p>To continue using GoBingo Pro, please contact the vendor to renew your license.</p>
+        <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> Contact: <a href="mailto:support@gobingo.et">support@gobingo.et</a></p>
+            <p><i class="fas fa-phone"></i> Phone: +251 XXX XXX XXX</p>
+        </div>
+    </div>
+
+    <!-- Electron Titlebar -->
+    <div class="electron-titlebar" id="electronTitlebar" style="display: none;">
+        <div class="title">GoBingo Pro v<span id="appVersion">1.0.0</span></div>
+        <div class="controls">
+            <button id="minimizeBtn" title="Minimize"><i class="fas fa-minus"></i></button>
+            <button id="maximizeBtn" title="Maximize/Restore"><i class="fas fa-square"></i></button>
+            <button id="closeBtn" class="close" title="Close"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <div class="click-hide-area" id="clickHideArea"></div>
+
+    <div class="resolution-wrapper">
+        <button class="resolution-toggle" id="resolutionToggleBtn">
+            <i class="fas fa-expand-alt"></i> <span id="resolutionLabel">Medium</span> <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+        </button>
+        <div class="resolution-dropdown" id="resolutionDropdown">
+            <div class="resolution-option" data-res="xs"><i class="fas fa-search-minus"></i> Extra Small</div>
+            <div class="resolution-option" data-res="small"><i class="fas fa-compress"></i> Small</div>
+            <div class="resolution-option" data-res="medium"><i class="fas fa-adjust"></i> Medium</div>
+            <div class="resolution-option" data-res="large"><i class="fas fa-expand"></i> Large</div>
+            <div class="resolution-option" data-res="xl"><i class="fas fa-search-plus"></i> Extra Large</div>
+        </div>
+    </div>
+
+    <nav id="mainNav">
+        <a href="#" id="navPlayBingo" style="color:#828282; text-decoration: none; font-size: 20px;letter-spacing: 1px; margin-left: 20px;">Play Bingo</a>
+        <img src="sounds/icons/logo.png" class="imglogo" id="logoImg" alt="Bingo Logo" title="Click to hide/show navigation" loading="eager" onerror="this.src='https://via.placeholder.com/150x80?text=GoBingo'">
+        <a id="logoutLink" class="logout">
+            <img src="https://via.placeholder.com/40?text=User" class="user_img" alt="User">
+            <i class="fa fa-bars"></i>
+        </a>
+        <ul class="menu" id="topnav">
+            <li><a id="menuLogout">Logout</a></li>
+            <li><a id="menuReport">Report</a></li>
+            <li><a id="menuControl">Daily Report</a></li>
+            <li><a id="menuUpload">Payment</a></li>
+            <li><a id="menuHistory">History</a></li>
+        </ul>
+    </nav>
+
+    <div class="game-container" id="gameContainer">
+        <div id="game-section" class="section active">
+            <div class="column1">
+                <div class="col1"><div class="contains"><div class="ball2"><div class="ball3"><div class="ball4"><div class="ball5"><p class="num" id="rand">--</p></div></div></div></div></div></div>
+                <div class="col2"><div class="box1" style="background-color: #0983ec; width: 100%; height: 100%;"><table id="bingoTable"><thead><tr><th class="b">B</th><th class="i">I</th><th class="n">N</th><th class="g">G</th><th class="o">O</th></tr></thead><tbody></tbody></table></div></div>
+                <div class="col3"><p class="lastcall">Recent 5 Numbers</p><div class="table-container"><div class="recent-calls-horizontal" id="recentCallsContainer"><div class='bingo-call' id='call0'>--</div><div class='bingo-call' id='call1'>--</div><div class='bingo-call' id='call2'>--</div><div class='bingo-call' id='call3'>--</div><div class='bingo-call' id='call4'>--</div></div></div><img class="callus" src="https://via.placeholder.com/300x70?text=Call+Us" alt="Call Us"></div>
+                <div class="col4"><img class="callus" src="https://via.placeholder.com/300x70?text=Prize" alt="Prize"><p class="prize" id='amount1'>?</p><p class="prize" style='margin-top:-3rem;'>Birr</p></div>
+            </div>
+            <div class="column2"><div class="brow"><p class="txtbox b">B</p><div class="callb" id="b-numbers"></div></div><div class="irow"><p class="txtbox i">I</p><div class="callb" id="i-numbers"></div></div><div class="irow"><p class="txtbox n">N</p><div class="callb" id="n-numbers"></div></div><div class="irow"><p class="txtbox g">G</p><div class="callb" id="g-numbers"></div></div><div class="irow"><p class="txtbox o">O</p><div class="callb" id="o-numbers"></div></div></div>
+            <div class="game-actions">
+                <button id="bingoo" class="btnbingo">StartGame</button>
+                <button id="newgame" class="btnbingo">New Game</button>
+                <button id="shuffle" class="btnshuffle">Bowzew</button>
+                <div style="width: 15%;"><select id="voiceselect" style="height: 40px; width: 100%; border-radius: 5px;"><option value="Amharic Bereket">Amharic bereket</option><option value="Nigus">Nigus</option><option value="Arada" selected>Arada</option><option value="Arada Formal">Arada Formal</option><option value="Female1">Female1</option><option value="Female2">Female2</option><option value="Tigrigna Boy1">Tigrigna Boy1</option><option value="Tigrigna Girl1">Tigrigna Girl1</option><option value="Tigrigna Girl2">Tigrigna Girl2</option><option value="Oromia Girl1">Oromia Girl1</option><option value="Oromia Girl2">Oromia Girl2</option></select></div>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;"><p style="color: white;">Speed: <span id="demo">3</span></p><input type="range" min="1" max="15" value="3" id="myRange"></div>
+                <div class="toggle-container"><label class="container-game">Manual<input type="checkbox" id="manualGameType" checked/><span class="checkmark"></span></label><label class="container-game">Automatic<input type="checkbox" id="automaticGameType"/><span class="checkmark"></span></label></div>
+                <div style="display: flex;">
+                    <input type="text" placeholder="Enter Card Number" id="Ecard_no" required style="height:40px;width:180px;padding:5px;">
+                    <button type="button" class="btnbingo" id="mycheck" style="margin-left:10px;">Check</button>
+                </div>
+                <button id="registerCardsBtn" class="btnbingo" style="background-color: #0a2f6c; color: #fff;">Register Cards</button>
+            </div>
+        </div>
+
+        <div id="reg-section" class="section">
+            <h1 style="text-align: center;color: white;margin-top:50px;">Round <span id="reg-round">1</span></h1>
+            <div class='content'>
+                <div class="balls">
+                    <h2 style="color: white; text-align: center; font-size: 1.8rem;">Select Cards (1-154)</h2>
+                    <div style="text-align: center; margin-bottom: 15px; flex-wrap: wrap; display: flex; justify-content: center; gap: 10px;">
+                        <button id="reloadButton" class="reload-button" style="margin-right: 8px;">Reload</button>
+                        <button id="myadd" class="reload-button" style="background:#0a2f6c; color:white;">Add Previous</button>
+                        <button id="selectAllBtn" class="reload-button" style="background:#28a745; color:white;">Select All</button>
+                        <button id="clearAllBtn" class="reload-button" style="background:#dc3545; color:white;">Clear All</button>
+                    </div>
+                    <div class="balls-line">
+                        <div class="container" id="circledNumbers"></div>
+                        <p class="selected-count">✅ Selected: <span id="selectedCount">0</span> / 154 Cards</p>
+                    </div>
+                </div>
+                <div id="regcard">
+                    <h1 style="letter-spacing: 4px;color: white; text-align: center; font-size: 1.6rem;">🎫 Selected Cards</h1>
+                    
+                    <div class="config-bar" id="configBar">
+                        <div class="config-item">
+                            <label>💰 Price per Card</label>
+                            <select id="birrInline" class="config-select">
+                                <option value="" disabled selected>Select</option>
+                                <option value="10">10 Birr</option><option value="20">20 Birr</option>
+                                <option value="30">30 Birr</option><option value="40">40 Birr</option>
+                                <option value="50">50 Birr</option><option value="100">100 Birr</option>
+                                <option value="200">200 Birr</option><option value="300">300 Birr</option>
+                                <option value="400">400 Birr</option><option value="500">500 Birr</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label>🎯 Winning Pattern</label>
+                            <select id="patternInline" class="config-select">
+                                <option value="1">Any One Line (includes Four Corners)</option>
+                                <option value="2">Any Two Lines</option>
+                                <option value="3">Vertical</option><option value="4">Horizontal</option>
+                                <option value="5">T Pattern</option><option value="6">Reverse T</option>
+                                <option value="7">X Pattern</option><option value="8">L Pattern</option>
+                                <option value="9">Reverse L</option><option value="10">Half Above</option>
+                                <option value="11">Half Below</option><option value="12">Full House</option>
+                                <option value="13">Four Corner (Only)</option>
+                            </select>
+                        </div>
+                        <div class="config-item">
+                            <label>🏠 House Stake</label>
+                            <div class="stake-inline-options" id="stakeInlineContainer">
+                                <button class="stake-btn" data-stake="0.2">20%</button>
+                                <button class="stake-btn" data-stake="0.3">30%</button>
+                                <button class="stake-btn active" data-stake="0.4">40%</button>
+                                <button class="stake-btn" data-stake="0.5">50%</button>
+                                <button class="stake-btn" data-stake="0.6">60%</button>
+                            </div>
+                        </div>
+                        <button id="playTopBtn" class="btnbingo">🎮 PLAY</button>
+                    </div>
+                    <div class="prize-display-inline">🏆 Winner Prize: <span id="calculatedPrizeInline">0</span> Birr</div>
+
+                    <table id="tablereg" style="color: white;">
+                        <thead><tr><th>Card #</th><th>Price</th><th>Pattern</th><th>Action</th></tr></thead>
+                        <tbody id="selectedCardsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="report-section" class="section"><div class="container" style="background:#fff; color:#000; padding:20px;"><h2>Player Report</h2><table class="table"><thead><tr><th>Name</th><th>City</th><th>Phone</th><th>Income</th><th>Commission</th></tr></thead><tbody id="report-body"></tbody></table></div></div>
+        <div id="control-section" class="section"><div class="container" style="background:#fff;color:#000;padding:20px;"><h2>Daily Report</h2><table class="table"><thead><tr><th>Round</th><th>Price</th><th>Players</th><th>Income</th></tr></thead><tbody id="control-body"></tbody></table></div></div>
+        <div id="upload-section" class="section"><div class="container" style="background:#fff;color:#000;padding:20px;text-align:center;"><h2>Upload Balance Update</h2><input type="file" id="balanceFile" style="margin:20px 0;"><button class="btnbingo" id="uploadBtn">Upload</button></div></div>
+        
+        <div id="history-section" class="section">
+            <div class="container" style="background:#fff; color:#000; padding:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2>📜 Game History</h2>
+                    <button id="clearHistoryBtn" style="background:#dc3545;color:white;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;">Clear History</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="table history-table" style="width:100%; text-align:center;">
+                        <thead><tr><th>Round</th><th>Date</th><th>Total Collected</th><th>House Income</th><th>Prize Pool</th><th>Winner Card</th><th>Status</th></tr></thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="myModal" class="modal fade" data-keyboard="false" data-backdrop="static" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:600px;height:500px;">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <a id="modalLogout" style="color:white;cursor:pointer;">Logout</a>
+                        <a id="modalRegister" style="color:white;cursor:pointer;">/Register Card</a>
+                        <a id="modalReport" style="color:white;cursor:pointer;">/Report</a>
+                        <a id="modalUpload" style="color:white;cursor:pointer;">/Payment</a>
+                        <a id="modalHistory" style="color:white;cursor:pointer;">/History</a>
+                    </div>
+                    <h5 style="color:white;">Round <span id="modalRound">1</span></h5>
+                </div>
+                <div class="modal-body">
+                    <h2 style="text-align:center;">Ready to Play?</h2>
+                    <img src="https://via.placeholder.com/400x300?text=Card+Pattern" id="img" style="width:80%;">
+                    <p id="modalPrizeInfo" style="text-align:center;color:#aaa;font-size:1rem;margin:5px 0;">Total Collected: <span id="modalTotal">0</span> Birr</p>
+                    <h1 id="amount" style="font-weight:bold;text-align:center;">0 Birr</h1>
+                    <p style="text-align:center;color:#28a745;font-size:1.4rem;font-weight:bold;margin:10px 0;">🏆 Prize Pool: <span id="modalPrize">0</span> Birr</p>
+                    <button type="button" class="btnstart" id="mybtn">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModalcard" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🎫 Card Check - <span id="check-card-id"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modalCloseBtn"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="check-status">Checking...</p>
+                    <table class="simulated-card-table" id="realCardTable">
+                        <thead><tr><th class="b">B</th><th class="i">I</th><th class="n">N</th><th class="g">G</th><th class="o">O</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="lock-section" style="display:none; margin-top: 20px; text-align: center;">
+                        <button class="lock-btn" id="lockBtn"><i class="fas fa-lock"></i> Lock Card</button>
+                    </div>
+                    <div id="bingo-btn" style="display:none; margin-top: 20px; text-align: center;">
+                        <button class="goodbingo" id="addbingo">Add Bingo</button>
+                        <button class="goodbingo" id="newgame2">New Game</button>
+                    </div>
+                    <div id="main-buttons" style="display:none; margin-top: 20px; text-align: center;">
+                        <button class="goodbingo" id="goodbingo">Good Bingo</button>
+                        <button class="goodbingo" id="notbingo">Not Bingo</button>
+                        <button class="goodbingo" id="addbingo1">Add Bingo</button>
+                        <button class="goodbingo" id="newbingo">New Bingo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="winnerModal" class="winner-modal hidden">
+        <div class="winner-modal-content">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-white mb-2">🎉 WINNER! 🎉</h2>
+                <div class="text-xl text-yellow-300 mb-2" id="winnerCardNumber"></div>
+                <div class="winning-pattern-badge" id="winningPattern"></div>
+            </div>
+            <div id="winnerCardGrid" class="winner-card-grid"></div>
+            <div class="text-center">
+                <button id="closeWinnerBtn" class="winner-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENTS -->
+    <audio id="winnerSound" src="sounds/game/winner.ogg" preload="auto" style="display:none;"></audio>
+    <audio id="lateWinnerSound" src="sounds/game/late.wav" preload="auto" style="display:none;"></audio>
+    <audio id="didntwinSound" src="sounds/game/didntwin.ogg" preload="auto" style="display:none;"></audio>
+    <audio id="notregSound" src="sounds/game/notreg.wav" preload="auto" style="display:none;"></audio>
+    <audio id="startSound" src="sounds/game/start.wav" preload="auto" style="display:none;"></audio>
+    <audio id="stopSound" src="sounds/game/stop.wav" preload="auto" style="display:none;"></audio>
+    <audio id="shuffleSound" src="sounds/game/shuffle.wav" preload="auto" style="display:none;"></audio>
+    <audio id="kickoutSound" src="sounds/game/kickout.ogg" preload="auto" style="display:none;"></audio>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // ================= LICENSE & EXPIRATION CONFIGURATION =================
+        // ⚠️ SELLER: SET THESE VALUES BEFORE DELIVERING TO CUSTOMER ⚠️
+        // Format: "YYYY-MM-DD" - License expires exactly 2 months from this date
+        const LICENSE_ACTIVATION_DATE = "2026-04-24"; // Set to delivery/activation date
+        const LICENSE_DURATION_MONTHS = 2; // Fixed 2-month license period
+        
+        // Calculate expiration date (do not modify this calculation)
+        function calculateExpiryDate(activationDate, months) {
+            const date = new Date(activationDate);
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+        const LICENSE_EXPIRY_DATE = calculateExpiryDate(LICENSE_ACTIVATION_DATE, LICENSE_DURATION_MONTHS);
+        const EXPIRY_TIMESTAMP = LICENSE_EXPIRY_DATE.getTime();
+        
+        // Obfuscated check function to prevent trivial bypass
+        function _vLd() { 
+            const n = Date.now(); 
+            const e = EXPIRY_TIMESTAMP; 
+            return n <= e; 
+        }
+        
+        // Check license and show expiration overlay if needed
+        function checkLicense() {
+            const overlay = document.getElementById('expirationOverlay');
+            const expiryDisplay = document.getElementById('expiryDateDisplay');
+            
+            if (!overlay || !expiryDisplay) return true;
+            
+            // Format expiry date for display
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            expiryDisplay.textContent = LICENSE_EXPIRY_DATE.toLocaleDateString('en-US', options);
+            
+            // Check if expired
+            if (!_vLd()) {
+                overlay.classList.remove('hidden');
+                // Disable all interactive elements
+                document.querySelectorAll('button, input, select, a, .card-number, .numbox, .txtbox').forEach(el => {
+                    el.style.pointerEvents = 'none';
+                    el.disabled = true;
+                    el.tabIndex = -1;
+                });
+                // Prevent keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key !== 'Tab') e.preventDefault();
+                }, { capture: true });
+                return false;
+            }
+            return true;
+        }
+
+        // ================= ELECTRON API FALLBACK (Web Browser Testing) =================
+        if (!window.electronAPI) {
+            window.electronAPI = {
+                log: (level, message, data) => console.log(`[WEB-${level.toUpperCase()}] ${message}`, data),
+                saveData: async (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch(e) { return false; } },
+                loadData: async (key) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e) { return null; } },
+                getAppInfo: () => ({ version: '1.0.0', isPackaged: false }),
+                getSoundUrl: async (relativePath) => `sounds/${relativePath}`,
+                windowControls: { 
+                    minimize: () => {}, maximize: () => {}, unmaximize: () => {}, 
+                    close: () => {}, isMaximized: async () => false 
+                },
+                saveGameState: async () => ({ success: true }),
+                loadGameState: async () => ({ success: true, data: null }),
+                toggleFullscreen: () => {},
+                onMenuNavigate: () => {},
+                onShowAbout: () => {},
+                onFullscreenChanged: () => {},
+                removeAllListeners: () => {}
+            };
+        }
+
+        window.addEventListener('error', (e) => console.error('💥 Runtime Error:', e.error));
+        window.addEventListener('unhandledrejection', (e) => console.error('💥 Unhandled Promise:', e.reason));
+
+        // ================= LOW-END DEVICE DETECTION =================
+        function isLowEndDevice() {
+            const cores = navigator.hardwareConcurrency || 2;
+            const mem = navigator.deviceMemory || 4;
+            return cores <= 4 && mem <= 4;
+        }
+
+        // ================= COMPLETE FIXED CARDS DATABASE (1-154) =================
+        const fixedCards = {
+            1: [[5,26,38,59,64],[12,28,40,46,62],[14,29,'★',50,75],[8,22,34,52,65],[2,19,36,51,61]],
+            2: [[3,30,40,50,73],[1,24,41,54,72],[11,21,'★',49,71],[4,26,35,46,63],[15,20,38,58,62]],
+            3: [[5,16,39,59,65],[7,27,33,54,64],[12,18,'★',56,63],[8,22,34,60,74],[3,28,40,51,71]],
+            4: [[3,27,32,57,69],[13,20,43,46,65],[15,28,'★',55,67],[2,22,38,52,64],[9,26,35,48,63]],
+            5: [[11,29,41,53,65],[3,22,40,49,70],[4,23,'★',56,69],[14,26,39,57,66],[1,25,36,59,62]],
+            6: [[6,18,33,54,72],[1,28,35,58,71],[10,25,'★',46,65],[14,26,44,53,68],[2,19,43,56,73]],
+            7: [[11,22,34,60,69],[9,16,37,47,61],[13,23,'★',48,72],[10,24,38,59,70],[4,26,31,51,68]],
+            8: [[7,23,38,54,64],[4,21,37,50,70],[8,26,'★',49,72],[14,30,31,46,68],[13,16,33,57,75]],
+            9: [[3,25,34,60,63],[1,21,35,52,61],[2,28,'★',59,64],[8,24,31,53,67],[6,16,32,51,69]],
+            10: [[11,24,38,58,75],[14,25,44,53,67],[8,26,'★',47,62],[1,16,39,56,72],[6,17,41,60,61]],
+            11: [[13,21,42,46,65],[14,26,40,57,68],[10,24,'★',52,67],[2,18,34,60,75],[5,19,35,50,73]],
+            12: [[14,29,37,57,71],[9,27,31,59,63],[4,26,'★',52,67],[7,18,34,54,73],[6,17,40,50,64]],
+            13: [[13,29,36,47,71],[2,16,33,54,74],[8,20,'★',57,68],[7,21,41,51,73],[3,19,39,52,69]],
+            14: [[9,26,45,58,68],[14,16,33,52,69],[7,21,'★',57,75],[2,28,44,56,66],[4,24,35,48,71]],
+            15: [[4,26,40,56,65],[6,30,43,49,72],[10,20,'★',60,69],[7,16,42,48,73],[12,18,33,47,74]],
+            16: [[8,30,45,48,74],[10,20,43,47,64],[11,19,'★',46,62],[13,22,36,53,67],[3,21,44,59,71]],
+            17: [[4,30,41,53,71],[10,26,33,46,67],[1,27,'★',58,72],[6,19,42,59,73],[7,21,38,50,70]],
+            18: [[12,26,45,55,62],[2,16,43,60,75],[14,20,'★',48,72],[4,24,40,51,73],[6,19,37,58,70]],
+            19: [[11,18,45,47,75],[13,30,40,46,63],[7,23,'★',55,74],[3,16,44,60,70],[1,29,33,53,69]],
+            20: [[13,19,35,52,75],[7,20,43,49,62],[1,25,'★',50,71],[6,18,36,55,63],[2,21,38,60,73]],
+            21: [[4,16,40,54,68],[9,20,35,58,65],[15,17,'★',57,62],[5,22,34,51,63],[1,18,33,48,66]],
+            22: [[13,30,39,47,62],[11,19,44,50,69],[4,18,'★',48,67],[12,25,33,59,74],[9,17,40,60,65]],
+            23: [[7,30,35,58,74],[15,23,41,51,63],[2,16,'★',50,73],[1,20,42,57,64],[9,19,44,59,66]],
+            24: [[8,25,45,56,74],[14,17,36,46,70],[13,27,'★',58,68],[12,19,32,55,66],[10,30,37,51,72]],
+            25: [[11,24,42,57,66],[1,22,39,50,63],[4,18,'★',52,70],[7,25,31,56,67],[14,23,33,60,75]],
+            26: [[15,17,37,52,62],[4,21,44,51,75],[6,18,'★',54,61],[10,19,38,56,73],[13,24,35,57,70]],
+            27: [[9,27,43,51,75],[1,28,36,47,62],[12,30,'★',56,70],[5,24,35,48,69],[11,26,33,46,74]],
+            28: [[8,29,40,46,66],[13,16,35,47,62],[9,23,'★',53,68],[3,20,38,55,64],[14,22,33,57,75]],
+            29: [[1,17,43,46,74],[15,16,45,55,62],[11,25,'★',48,67],[4,26,31,54,70],[12,27,33,53,75]],
+            30: [[6,29,42,46,62],[3,30,35,55,66],[14,16,'★',47,63],[1,23,44,56,69],[7,26,37,48,64]],
+            31: [[9,21,37,60,63],[3,24,35,46,70],[13,18,'★',47,72],[11,19,36,56,62],[10,17,32,55,66]],
+            32: [[7,24,36,48,73],[4,20,44,60,75],[11,26,'★',54,68],[1,18,42,57,71],[15,28,32,58,64]],
+            33: [[2,19,33,48,62],[14,28,34,54,63],[5,29,'★',57,65],[3,23,35,46,69],[15,27,37,49,66]],
+            34: [[1,27,37,48,73],[14,20,35,50,63],[9,30,'★',60,72],[13,17,43,51,66],[8,21,33,47,64]],
+            35: [[8,29,33,55,69],[10,19,32,48,61],[6,16,'★',60,64],[5,24,41,54,62],[15,26,43,53,67]],
+            36: [[10,28,42,49,66],[8,26,40,59,75],[9,20,'★',51,63],[13,18,41,47,61],[5,19,43,52,64]],
+            37: [[11,27,39,55,68],[15,24,41,60,67],[9,21,'★',56,61],[3,30,43,47,75],[12,29,42,57,71]],
+            38: [[11,27,42,53,65],[3,21,36,60,69],[8,22,'★',57,72],[13,19,39,46,63],[6,23,45,50,67]],
+            39: [[6,27,34,59,61],[13,21,42,53,71],[15,18,'★',57,65],[9,29,38,50,64],[3,25,33,54,62]],
+            40: [[14,27,36,53,65],[12,26,34,57,61],[8,24,'★',49,63],[10,28,43,51,75],[2,20,38,59,67]],
+            41: [[14,18,31,52,65],[7,17,33,56,61],[4,20,'★',60,71],[6,23,43,46,75],[2,25,39,59,73]],
+            42: [[13,25,44,58,62],[15,24,31,48,67],[7,30,'★',50,65],[2,23,42,54,68],[8,26,32,59,69]],
+            43: [[4,24,34,55,66],[3,25,35,48,62],[12,18,'★',60,70],[15,29,45,54,72],[6,17,43,58,67]],
+            44: [[1,27,44,53,62],[7,19,45,52,74],[14,24,'★',51,73],[6,30,42,56,66],[5,26,36,57,69]],
+            45: [[4,18,33,52,73],[2,27,35,50,66],[7,30,'★',60,64],[11,26,38,47,72],[1,19,42,48,65]],
+            46: [[5,30,44,46,75],[8,16,34,50,65],[1,22,'★',48,73],[10,29,36,56,61],[9,20,39,55,62]],
+            47: [[7,16,43,50,65],[9,26,37,58,72],[12,19,'★',48,68],[3,24,36,49,63],[5,23,41,60,61]],
+            48: [[5,19,40,60,75],[9,24,33,57,66],[15,29,'★',49,64],[14,17,45,58,69],[6,25,34,56,73]],
+            49: [[13,27,33,57,73],[12,16,38,47,63],[15,24,'★',60,72],[6,18,40,55,71],[9,26,35,53,61]],
+            50: [[7,16,38,51,64],[14,25,42,53,74],[4,18,'★',55,72],[11,24,33,57,68],[8,19,40,52,67]],
+            51: [[2,10,6,13,5],[16,20,17,27,26],[37,34,0,42,40],[59,55,52,49,51],[70,66,69,74,67]],
+            52: [[4,12,5,2,1],[25,22,20,24,30],[32,38,0,37,43],[57,55,50,47,51],[68,75,63,62,61]],
+            53: [[4,10,13,2,12],[30,22,26,20,18],[34,37,0,32,36],[55,50,53,48,56],[72,71,74,75,73]],
+            54: [[15,13,5,7,10],[29,21,23,19,24],[40,41,0,43,45],[53,55,47,54,49],[67,70,65,73,74]],
+            55: [[4,9,2,5,10],[17,28,19,24,26],[34,35,0,37,39],[59,55,47,52,53],[64,73,72,69,75]],
+            56: [[10,14,11,2,9],[26,22,24,25,20],[36,32,0,40,42],[49,48,47,58,46],[62,66,67,65,70]],
+            57: [[3,1,9,2,6],[17,26,18,27,24],[35,45,0,34,33],[51,52,55,48,53],[62,63,61,66,65]],
+            58: [[11,14,8,1,6],[24,25,26,16,17],[38,44,0,39,41],[58,53,47,56,60],[75,67,62,72,61]],
+            59: [[8,7,4,9,11],[19,16,17,22,20],[40,45,0,42,41],[48,50,59,53,56],[71,61,65,73,64]],
+            60: [[4,11,2,8,1],[19,29,23,16,18],[44,39,0,33,41],[57,50,46,56,51],[74,72,68,73,63]],
+            61: [[6,2,13,1,7],[17,25,16,19,20],[32,44,0,34,40],[57,48,46,52,54],[61,63,71,72,62]],
+            62: [[7,5,15,14,2],[27,26,24,22,25],[45,32,0,39,35],[55,49,54,46,47],[70,68,64,65,61]],
+            63: [[8,12,14,4,1],[30,17,29,19,22],[41,44,0,39,43],[60,52,59,49,55],[75,68,67,62,72]],
+            64: [[14,9,15,10,11],[23,30,26,28,16],[35,34,0,44,36],[52,49,59,54,53],[65,63,61,75,74]],
+            65: [[9,12,4,5,13],[26,28,19,22,23],[42,38,0,35,45],[59,50,52,58,55],[73,69,67,61,66]],
+            66: [[4,5,1,6,15],[20,28,18,22,25],[42,38,0,36,34],[54,49,50,48,56],[62,73,70,74,63]],
+            67: [[4,15,6,12,7],[20,21,28,16,17],[41,43,0,44,31],[56,50,59,57,52],[69,73,62,74,63]],
+            68: [[9,12,8,3,5],[28,17,19,20,21],[33,38,0,35,45],[53,55,54,49,50],[75,63,68,73,65]],
+            69: [[10,7,5,8,12],[16,23,25,18,20],[45,32,0,44,35],[60,57,47,48,46],[73,71,64,67,68]],
+            70: [[12,4,8,3,14],[28,29,19,17,25],[41,43,0,35,36],[54,47,59,57,48],[62,69,72,64,68]],
+            71: [[5,6,10,1,14],[16,29,24,18,19],[33,32,0,45,31],[56,48,50,52,54],[73,70,64,71,61]],
+            72: [[14,5,10,6,7],[27,22,25,19,23],[40,42,0,37,31],[57,59,52,50,60],[61,74,65,66,75]],
+            73: [[9,4,2,6,1],[28,25,21,20,22],[31,37,0,32,33],[49,47,57,59,60],[69,74,66,68,63]],
+            74: [[3,4,7,9,10],[22,21,16,20,26],[31,44,0,45,43],[49,46,55,54,51],[61,63,69,73,71]],
+            75: [[10,14,4,7,15],[28,30,22,20,17],[43,41,0,35,33],[58,49,56,48,59],[73,74,64,69,66]],
+            76: [[2,13,11,9,15],[17,26,28,30,24],[32,33,0,36,41],[60,46,48,51,56],[62,71,69,73,75]],
+            77: [[1,14,4,2,11],[30,17,19,24,28],[45,41,0,38,37],[58,51,52,48,46],[64,67,68,70,74]],
+            78: [[12,13,11,3,7],[25,18,17,22,23],[42,39,0,34,33],[59,53,58,57,55],[74,71,68,63,64]],
+            79: [[12,5,7,10,2],[24,25,28,18,27],[43,39,0,40,44],[51,58,60,47,53],[68,70,71,65,64]],
+            80: [[15,11,9,1,2],[23,19,25,17,28],[33,42,0,38,43],[50,60,48,54,49],[62,67,61,74,71]],
+            81: [[6,13,15,8,11],[24,18,19,30,22],[40,37,0,35,39],[48,49,55,60,52],[71,75,64,72,68]],
+            82: [[5,1,2,10,15],[24,28,21,18,17],[42,45,0,35,43],[58,54,53,50,49],[72,70,61,64,65]],
+            83: [[7,12,5,14,15],[30,27,24,25,19],[32,37,0,39,40],[60,48,58,49,51],[75,71,63,64,66]],
+            84: [[6,11,5,15,2],[30,18,29,26,23],[38,40,0,45,42],[59,52,51,53,57],[65,73,72,71,70]],
+            85: [[9,14,5,12,3],[29,18,24,17,16],[39,40,0,33,36],[54,59,58,57,49],[63,73,74,72,68]],
+            86: [[15,7,14,2,6],[22,25,24,17,30],[35,45,0,37,40],[52,47,59,49,54],[66,61,67,75,64]],
+            87: [[4,12,13,8,6],[18,25,20,27,22],[31,34,0,36,37],[49,51,52,54,50],[66,74,71,68,64]],
+            88: [[1,13,6,5,3],[17,27,23,21,28],[42,38,0,32,41],[57,53,50,47,56],[65,73,68,63,72]],
+            89: [[2,5,11,1,12],[18,20,26,19,27],[38,43,0,42,39],[53,59,51,47,50],[63,73,71,68,62]],
+            90: [[11,15,8,5,13],[21,22,17,23,26],[36,40,0,42,39],[58,55,46,53,56],[68,62,69,64,74]],
+            91: [[3,15,10,7,9],[29,23,18,17,16],[43,37,0,32,31],[60,54,51,53,55],[67,63,74,62,61]],
+            92: [[8,7,4,9,11],[19,16,17,20,26],[40,45,0,42,41],[48,50,53,59,56],[71,61,65,73,64]],
+            93: [[7,9,14,3,13],[28,24,27,16,22],[40,31,0,32,39],[48,47,59,56,51],[63,73,61,75,72]],
+            94: [[15,6,9,12,10],[25,30,26,16,17],[35,31,0,45,32],[59,48,58,55,54],[68,70,67,71,73]],
+            95: [[15,14,10,5,6],[28,20,16,18,27],[45,33,0,34,41],[58,46,52,53,54],[67,66,71,62,63]],
+            96: [[15,10,9,8,3],[27,25,18,20,19],[31,37,0,44,41],[52,48,55,58,49],[69,63,68,75,61]],
+            97: [[6,3,4,7,15],[28,27,20,16,21],[45,33,0,36,34],[57,51,48,52,46],[65,62,70,66,64]],
+            98: [[10,2,5,6,8],[28,22,23,24,19],[43,34,0,40,41],[55,57,59,46,48],[72,74,61,63,65]],
+            99: [[11,2,13,5,14],[18,24,19,23,17],[33,35,0,40,41],[47,48,54,49,58],[62,69,75,70,65]],
+            100: [[5,15,12,10,4],[19,18,29,17,24],[45,42,0,44,38],[55,54,46,57,56],[75,71,68,62,73]],
+            101: [[13,6,14,7,12],[27,24,21,18,17],[40,34,0,39,45],[57,53,52,47,49],[70,71,64,66,62]],
+            102: [[13,5,1,3,8],[21,17,23,18,22],[39,34,0,40,41],[58,55,54,56,57],[71,69,66,64,61]],
+            103: [[1,15,13,2,11],[29,18,21,23,19],[45,35,0,36,33],[60,54,50,49,47],[74,70,65,62,63]],
+            104: [[8,7,2,11,13],[22,19,27,23,26],[44,38,0,42,35],[56,54,49,47,55],[70,65,69,63,75]],
+            105: [[15,11,12,3,10],[16,28,20,30,24],[39,40,0,35,37],[59,51,56,60,53],[66,68,67,72,64]],
+            106: [[5,15,10,2,6],[21,20,28,26,27],[35,42,0,31,33],[46,51,47,49,52],[69,70,67,64,65]],
+            107: [[14,13,3,6,10],[23,25,28,30,16],[40,32,0,44,37],[58,46,50,54,53],[62,65,63,66,74]],
+            108: [[1,5,6,14,2],[19,26,29,25,24],[41,36,0,42,45],[49,50,60,47,54],[72,69,61,71,65]],
+            109: [[2,4,9,1,14],[16,23,17,26,20],[43,32,0,34,31],[47,58,51,59,57],[70,73,74,75,72]],
+            110: [[3,15,14,6,11],[28,18,20,21,30],[42,36,0,45,41],[46,53,55,57,60],[70,64,67,73,62]],
+            111: [[15,10,3,9,14],[28,19,17,16,24],[39,34,0,45,36],[58,54,59,51,49],[65,68,71,66,64]],
+            112: [[7,13,9,4,2],[20,19,21,18,27],[32,36,0,38,45],[47,53,57,59,51],[61,67,66,68,69]],
+            113: [[5,2,1,9,13],[26,18,29,22,17],[33,39,0,44,42],[56,54,58,57,55],[75,62,72,68,67]],
+            114: [[1,13,6,7,2],[20,18,27,23,29],[34,40,0,37,44],[58,59,52,48,57],[75,69,67,70,73]],
+            115: [[11,4,2,14,5],[21,28,26,29,24],[44,34,0,41,31],[49,55,47,48,51],[64,62,71,73,63]],
+            116: [[9,1,6,12,2],[20,26,16,22,18],[35,43,0,41,38],[59,56,58,49,51],[66,72,64,61,69]],
+            117: [[11,1,4,9,14],[16,26,29,28,23],[45,44,0,31,40],[60,55,47,51,59],[73,69,72,64,68]],
+            118: [[5,1,7,2,10],[18,27,28,21,24],[45,42,0,43,32],[58,50,54,60,51],[67,65,64,74,71]],
+            119: [[5,1,2,3,12],[30,22,18,29,17],[38,42,0,33,32],[48,60,50,46,55],[71,62,65,75,66]],
+            120: [[7,3,12,4,13],[23,27,21,24,17],[45,42,0,41,44],[55,60,57,49,50],[62,71,66,68,75]],
+            121: [[10,3,13,2,7],[28,27,24,21,25],[32,40,0,41,42],[59,47,57,60,58],[72,63,71,68,65]],
+            122: [[13,7,10,8,14],[27,22,25,16,23],[33,42,0,43,38],[51,48,54,52,60],[63,61,65,72,74]],
+            123: [[1,15,3,8,4],[22,25,23,26,28],[39,35,0,44,38],[51,47,50,49,53],[62,75,66,70,67]],
+            124: [[9,8,4,11,1],[19,23,24,17,26],[35,43,0,32,38],[54,57,58,50,49],[73,61,68,62,75]],
+            125: [[8,2,13,15,6],[18,30,29,27,17],[39,37,0,31,45],[54,57,56,49,52],[63,75,68,67,61]],
+            126: [[6,13,9,3,8],[26,19,25,20,27],[44,32,0,40,31],[55,60,49,46,56],[62,61,75,65,71]],
+            127: [[1,4,7,9,11],[27,17,16,23,21],[40,33,0,36,34],[54,46,48,56,50],[73,68,63,66,74]],
+            128: [[9,8,1,7,12],[19,26,24,20,27],[40,31,0,39,43],[46,48,59,49,57],[75,67,65,70,73]],
+            129: [[3,1,4,14,9],[23,27,28,29,30],[40,45,0,35,41],[53,51,46,56,52],[75,68,73,61,74]],
+            130: [[10,14,2,6,3],[25,29,28,22,18],[37,38,0,35,45],[53,58,56,57,60],[65,69,68,70,67]],
+            131: [[11,3,10,7,13],[26,28,24,18,30],[39,33,0,45,44],[51,56,58,53,47],[75,67,74,69,64]],
+            132: [[8,2,14,9,15],[17,24,16,21,18],[42,39,0,31,35],[52,56,60,47,54],[74,63,62,72,70]],
+            133: [[14,15,10,2,1],[16,21,26,19,25],[32,34,0,45,40],[53,59,55,56,51],[74,65,66,61,64]],
+            134: [[8,11,9,6,13],[27,26,19,23,22],[44,31,0,41,40],[54,55,57,49,56],[70,64,67,62,72]],
+            135: [[3,9,5,12,4],[27,24,17,18,25],[31,40,0,38,36],[46,48,55,58,54],[71,67,62,68,73]],
+            136: [[10,15,9,5,14],[20,28,24,25,23],[32,34,0,37,31],[58,56,50,46,51],[73,61,75,67,65]],
+            137: [[7,15,1,4,8],[29,27,18,16,21],[42,40,0,38,39],[56,60,51,57,59],[69,64,74,67,68]],
+            138: [[4,8,9,11,3],[17,29,24,27,22],[31,37,0,34,36],[46,57,59,55,48],[70,65,67,63,73]],
+            139: [[9,14,11,8,4],[17,24,18,21,27],[35,45,0,36,37],[55,52,48,47,57],[72,68,66,71,70]],
+            140: [[2,13,15,4,10],[22,21,30,26,29],[41,45,0,39,34],[54,51,47,50,58],[62,70,63,75,64]],
+            141: [[1,5,2,12,15],[21,28,26,24,17],[32,42,0,34,43],[54,51,60,59,57],[65,63,61,62,72]],
+            142: [[1,9,7,12,11],[30,24,20,17,18],[45,42,0,36,35],[49,56,52,60,54],[66,69,74,62,63]],
+            143: [[10,14,1,11,13],[27,16,25,26,28],[35,37,0,41,42],[51,53,48,58,47],[61,72,69,70,68]],
+            144: [[14,10,7,15,6],[17,28,16,24,29],[34,43,0,41,36],[54,55,58,59,57],[63,70,71,69,64]],
+            145: [[5,10,9,14,6],[18,21,28,25,20],[31,43,0,40,35],[52,56,59,48,47],[62,66,69,67,71]],
+            146: [[11,10,15,13,2],[20,25,17,21,23],[43,33,0,42,35],[49,58,50,52,51],[75,74,67,71,64]],
+            147: [[15,6,13,8,7],[18,19,16,27,29],[44,31,0,35,38],[54,56,60,55,57],[69,64,70,66,72]],
+            148: [[11,4,14,8,7],[28,26,16,25,22],[35,45,0,33,44],[47,48,54,52,57],[72,73,71,61,68]],
+            149: [[9,6,7,11,8],[27,20,19,22,17],[39,38,0,35,45],[48,51,55,46,47],[70,63,68,74,69]],
+            150: [[5,15,11,4,2],[17,18,21,23,25],[43,42,0,39,33],[47,48,56,54,49],[74,63,64,66,65]],
+            151: [[5,6,12,1,4],[17,20,25,16,26],[38,43,0,45,35],[46,51,56,60,53],[70,75,61,68,74]],
+            152: [[4,2,7,14,6],[28,19,16,26,18],[37,31,0,39,32],[53,49,56,52,57],[61,62,64,74,67]],
+            153: [[1,3,10,8,6],[21,29,24,26,19],[34,41,0,35,31],[52,54,57,53,58],[67,69,70,72,64]],
+            154: [[3,10,14,2,15],[17,30,27,19,18],[36,40,0,41,42],[49,52,58,59,47],[69,62,66,68,64]]
+        };
+
+        // Helper function to get card from ID
+        function getCardFromId(id) {
+            if (fixedCards[id]) {
+                const card = JSON.parse(JSON.stringify(fixedCards[id]));
+                for (let row = 0; row < 5; row++) {
+                    if (card[row][2] === 0) {
+                        card[row][2] = '★';
+                    }
+                }
+                return card;
+            }
+            const seed = (val, min, max, count) => {
+                let nums = new Set(), s = val;
+                while(nums.size < count) { 
+                    s = (s * 9301 + 49297) % 233280; 
+                    nums.add(Math.floor((s / 233280) * (max - min + 1)) + min); 
+                }
+                return Array.from(nums);
+            };
+            let b = seed(id*100+1,1,15,5), i = seed(id*100+2,16,30,5), n = seed(id*100+3,31,45,4), g = seed(id*100+4,46,60,5), o = seed(id*100+5,61,75,5);
+            n.splice(2,0,'★');
+            return Array.from({length:5}, (_,r)=>[b[r],i[r],n[r],g[r],o[r]]);
+        }
+
+        // ================= AUDIO SYSTEM =================
+        let audioCache = {};
+        let audioContextUnlocked = false;
+
+        ['click', 'keydown', 'touchstart'].forEach(evt => {
+            document.addEventListener(evt, () => {
+                if (audioContextUnlocked) return;
+                audioContextUnlocked = true;
+                const silent = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+                silent.volume = 0;
+                silent.play().catch(() => {});
+            }, { once: true, passive: true });
+        });
+
+        async function playSound(soundName) {
+            const soundMap = {
+                winner: { key: 'winnerSound', path: 'game/winner.ogg' },
+                late: { key: 'lateWinnerSound', path: 'game/late.wav' },
+                didntwin: { key: 'didntwinSound', path: 'game/didntwin.ogg' },
+                notreg: { key: 'notregSound', path: 'game/notreg.wav' },
+                start: { key: 'startSound', path: 'game/start.wav' },
+                stop: { key: 'stopSound', path: 'game/stop.wav' },
+                shuffle: { key: 'shuffleSound', path: 'game/shuffle.wav' },
+                kickout: { key: 'kickoutSound', path: 'game/kickout.ogg' }
+            };
+            
+            const soundInfo = soundMap[soundName];
+            if (!soundInfo) return false;
+            
+            const audioEl = document.getElementById(soundInfo.key);
+            if (audioEl) {
+                try {
+                    audioEl.currentTime = 0;
+                    audioEl.volume = 0.7;
+                    await Promise.race([
+                        audioEl.play(),
+                        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
+                    ]);
+                    return true;
+                } catch (e) {
+                    console.warn(`⚠️ Direct audio failed:`, e.message);
+                }
+            }
+            
+            try {
+                const soundUrl = await window.electronAPI.getSoundUrl(soundInfo.path);
+                if (!audioCache[soundName]) {
+                    audioCache[soundName] = new Audio();
+                    audioCache[soundName].src = soundUrl;
+                    audioCache[soundName].preload = 'auto';
+                }
+                const audio = audioCache[soundName];
+                audio.currentTime = 0;
+                audio.volume = 0.7;
+                await Promise.race([audio.play(), new Promise((_, r) => setTimeout(r, 2000))]);
+                return true;
+            } catch (e) {
+                console.warn(`⚠️ Dynamic audio failed:`, e.message);
+                return false;
+            }
+        }
+
+        async function playNumberSound(number, voice = 'Arada') {
+            if (!audioContextUnlocked) return false;
+            const voiceFolders = {
+                'Arada': 'Arada/', 'Amharic Bereket': 'Amharic/', 'Nigus': 'Nigus/',
+                'Arada Formal': 'Arada Formal/', 'Female1': 'Female1/', 'Female2': 'Female2/',
+                'Tigrigna Boy1': 'Tigrigna Boy1/', 'Tigrigna Girl1': 'Tigrigna Girl1/',
+                'Tigrigna Girl2': 'Tigrigna Girl2/', 'Oromia Girl1': 'Oromo Girl1/',
+                'Oromia Girl2': 'Oromo Girl2/'
+            };
+            const folder = voiceFolders[voice] || 'Arada/';
+            const relativePath = `${folder}${number}.wav`;
+            try {
+                const soundUrl = await window.electronAPI.getSoundUrl(relativePath);
+                const audio = new Audio(soundUrl);
+                audio.volume = 0.8;
+                const loadTimeout = setTimeout(() => { audio.src = ''; }, 2000);
+                await new Promise((res, rej) => {
+                    audio.oncanplaythrough = () => { clearTimeout(loadTimeout); audio.play().then(res).catch(rej); };
+                    audio.onerror = () => { clearTimeout(loadTimeout); rej(new Error('Load failed')); };
+                    audio.load();
+                });
+                return true;
+            } catch (e) {
+                return voice !== 'Arada' ? playNumberSound(number, 'Arada') : false;
+            }
+        }
+
+        window.playGameSound = (id) => {
+            const map = { 
+                'winnerSound':'winner', 'lateWinnerSound':'late', 'didntwinSound':'didntwin', 
+                'notregSound':'notreg', 'startSound':'start', 'stopSound':'stop', 
+                'shuffleSound':'shuffle', 'kickoutSound':'kickout' 
+            };
+            return map[id] ? playSoundWithTimeout(map[id]) : Promise.resolve(false);
+        };
+
+        window.queueNumberSound = (num) => {
+            const voice = document.getElementById('voiceselect')?.value || 'Arada';
+            return playNumberSound(num, voice);
+        };
+
+        async function playSoundWithTimeout(soundName, timeout = 2000) {
+            return Promise.race([
+                playSound(soundName),
+                new Promise(resolve => setTimeout(() => resolve(false), timeout))
+            ]);
+        }
+
+        // ================= RESOLUTION MANAGEMENT =================
+        let currentResolution = localStorage.getItem('gameResolution') || 'medium';
+        const resolutionToggleBtn = document.getElementById('resolutionToggleBtn');
+        const resolutionLabel = document.getElementById('resolutionLabel');
+        const resolutionDropdown = document.getElementById('resolutionDropdown');
+        
+        function setResolution(res) { 
+            document.body.classList.remove('resolution-xs','resolution-small','resolution-medium','resolution-large','resolution-xl'); 
+            if(res === 'xs') document.body.classList.add('resolution-xs');
+            else if(res === 'small') document.body.classList.add('resolution-small');
+            else if(res === 'large') document.body.classList.add('resolution-large');
+            else if(res === 'xl') document.body.classList.add('resolution-xl');
+            else { document.body.classList.add('resolution-medium'); res = 'medium'; }
+            
+            if(resolutionLabel) resolutionLabel.innerText = res.charAt(0).toUpperCase() + res.slice(1);
+            currentResolution = res; 
+            localStorage.setItem('gameResolution', res); 
+            window.electronAPI.saveData('gameResolution', res).catch(()=>{});
+            
+            document.querySelectorAll('.resolution-option').forEach(opt => { 
+                opt.classList.toggle('active', opt.getAttribute('data-res') === res); 
+            }); 
+        }
+        setResolution(currentResolution);
+        
+        if(resolutionToggleBtn) {
+            resolutionToggleBtn.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                resolutionDropdown?.classList.toggle('show'); 
+            });
+        }
+        
+        document.addEventListener('click', (e) => { 
+            if(resolutionDropdown && !resolutionToggleBtn?.contains(e.target) && !resolutionDropdown.contains(e.target)) {
+                resolutionDropdown.classList.remove('show'); 
+            }
+        });
+        
+        document.querySelectorAll('.resolution-option').forEach(opt => { 
+            opt.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                setResolution(opt.getAttribute('data-res')); 
+                resolutionDropdown?.classList.remove('show'); 
+            }); 
+        });
+
+        // ================= NAVIGATION & UI =================
+        function hideNavigation() {
+            const nav = document.getElementById('mainNav');
+            const clickArea = document.getElementById('clickHideArea');
+            if(nav && !nav.classList.contains('nav-hidden')) nav.classList.add('nav-hidden');
+            if(clickArea) clickArea.classList.remove('active');
+        }
+        
+        function showNavigation() {
+            const nav = document.getElementById('mainNav');
+            const clickArea = document.getElementById('clickHideArea');
+            if(nav && nav.classList.contains('nav-hidden')) {
+                nav.classList.remove('nav-hidden');
+                if(clickArea) clickArea.classList.add('active');
+                setTimeout(hideNavigation, 5000);
+            }
+        }
+        
+        function toggleNavVisibility() {
+            const nav = document.getElementById('mainNav');
+            const clickArea = document.getElementById('clickHideArea');
+            nav.classList.toggle('nav-hidden');
+            clickArea?.classList.toggle('active', !nav.classList.contains('nav-hidden'));
+            if(!nav.classList.contains('nav-hidden')) setTimeout(hideNavigation, 5000);
+        }
+        
+        const logoImg = document.getElementById('logoImg');
+        if(logoImg) logoImg.addEventListener('click', (e) => { e.stopPropagation(); toggleNavVisibility(); });
+        
+        const clickHideArea = document.getElementById('clickHideArea');
+        if(clickHideArea) clickHideArea.addEventListener('click', hideNavigation);
+        
+        document.getElementById('gameContainer')?.addEventListener('click', (e) => { 
+            if(!e.target.closest('nav') && !e.target.closest('.menu') && !e.target.closest('.logout')) hideNavigation(); 
+        });
+        
+        setTimeout(hideNavigation, 1000);
+        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') hideNavigation(); });
+
+        // ================= GAME STATE =================
+        let gameState = { 
+            round: parseInt(localStorage.getItem('currentRound') || '1'), 
+            balance: 1000, calledNumbers: [], cardNumbers: [], gameActive: false, gameType: 'Manual', speed: 3,
+            stake: parseFloat(localStorage.getItem('gameStake') || '0.4'), totalMoney: 0, prizePool: 0, houseCut: 0
+        };
+        let gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+        let light = null, uniqueRandoms = [], max = 75, calledNumbersSet = new Set();
+        let selectedCards = new Set();
+        const totalCards = 154;
+        
+        function loadPersistedCards() {
+            try {
+                const saved = localStorage.getItem('selectedCards');
+                if (saved) {
+                    const cards = JSON.parse(saved);
+                    if (Array.isArray(cards)) {
+                        selectedCards = new Set(cards);
+                        console.log(`✅ Loaded ${selectedCards.size} persisted cards`);
+                    }
+                }
+            } catch (e) { console.warn('⚠️ Failed to load persisted cards:', e); selectedCards = new Set(); }
+        }
+        
+        function savePersistedCards() {
+            try { localStorage.setItem('selectedCards', JSON.stringify(Array.from(selectedCards))); } 
+            catch (e) { console.warn('⚠️ Failed to save persisted cards:', e); }
+        }
+        
+        function flashError(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) { el.classList.add('error-shake'); setTimeout(() => el.classList.remove('error-shake'), 500); }
+        }
+        
+        function calculatePrize() {
+            const price = parseFloat(document.getElementById('birrInline')?.value || 0);
+            const numCards = selectedCards.size;
+            const stake = gameState.stake;
+            if (price <= 0 || numCards === 0) return { totalMoney: 0, prize: 0, houseCut: 0 };
+            const totalMoney = price * numCards;
+            const houseCut = totalMoney * stake;
+            return { totalMoney, prize: totalMoney - houseCut, houseCut };
+        }
+
+        function updatePrizeDisplay() {
+            const calc = calculatePrize();
+            gameState.totalMoney = calc.totalMoney; gameState.prizePool = calc.prize; gameState.houseCut = calc.houseCut;
+            const prizeSpan = document.getElementById('calculatedPrizeInline');
+            if(prizeSpan) prizeSpan.textContent = Math.round(calc.prize);
+        }
+
+        function initInlineConfig() {
+            const stakeBtns = document.querySelectorAll('#stakeInlineContainer .stake-btn');
+            stakeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    stakeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    gameState.stake = parseFloat(this.dataset.stake);
+                    localStorage.setItem('gameStake', gameState.stake);
+                    window.electronAPI.saveData('gameStake', gameState.stake).catch(()=>{});
+                    updatePrizeDisplay();
+                });
+            });
+            stakeBtns.forEach(b => b.classList.toggle('active', parseFloat(b.dataset.stake) === gameState.stake));
+
+            const birrInline = document.getElementById('birrInline');
+            const patternInline = document.getElementById('patternInline');
+            const savedPrice = localStorage.getItem('gamePrice');
+            const savedPattern = localStorage.getItem('gamePattern');
+            if(savedPrice && birrInline) birrInline.value = savedPrice;
+            if(savedPattern && patternInline) patternInline.value = savedPattern;
+
+            if(birrInline) birrInline.addEventListener('change', (e) => { localStorage.setItem('gamePrice', e.target.value); updatePrizeDisplay(); renderSelectedCardsTable(); });
+            if(patternInline) patternInline.addEventListener('change', (e) => { localStorage.setItem('gamePattern', e.target.value); renderSelectedCardsTable(); });
+            updatePrizeDisplay();
+        }
+        
+        // ================= CARD GENERATION & UI =================
+        function generateCardNumbers() {
+            const container = document.getElementById('circledNumbers');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= totalCards; i++) {
+                const cardNum = document.createElement('div');
+                cardNum.className = 'card-number' + (selectedCards.has(i) ? ' selected' : '');
+                cardNum.textContent = i; 
+                cardNum.dataset.card = i;
+                cardNum.addEventListener('click', () => selectCardOnly(i, cardNum));
+                container.appendChild(cardNum);
+            }
+            updateSelectedCount(); 
+            renderSelectedCardsTable();
+        }
+        
+        function selectCardOnly(cardNum, element) {
+            if (!selectedCards.has(cardNum)) {
+                selectedCards.add(cardNum);
+                if(element) element.classList.add('selected');
+                updateSelectedCount(); 
+                renderSelectedCardsTable(); 
+                updatePrizeDisplay();
+                savePersistedCards();
+            }
+        }
+        
+        function updateSelectedCount() { 
+            const el = document.getElementById('selectedCount'); 
+            if(el) el.textContent = selectedCards.size; 
+        }
+        
+        function renderSelectedCardsTable() {
+            const tbody = document.getElementById('selectedCardsBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (selectedCards.size === 0) { 
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:25px;font-size:1.2rem;">🎫 No cards selected yet</td></tr>'; 
+                return; 
+            }
+            const price = document.getElementById('birrInline')?.value || '-';
+            const pattern = document.getElementById('patternInline')?.selectedOptions[0]?.text || '-';
+            selectedCards.forEach(cardNum => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong style="font-size:1.3rem;">#${cardNum}</strong></td><td>${price !== '-' ? price + ' Birr' : '-'}</td><td>${pattern}</td><td><button class="remove-card" data-card="${cardNum}">✕ Remove</button></td>`;
+                tbody.appendChild(tr);
+            });
+            tbody.querySelectorAll('.remove-card').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const cardNum = parseInt(this.dataset.card);
+                    removeSelectedCard(cardNum);
+                });
+            });
+        }
+        
+        function removeSelectedCard(cardNum) {
+            selectedCards.delete(cardNum);
+            const cardEl = document.querySelector(`.card-number[data-card="${cardNum}"]`);
+            if(cardEl) cardEl.classList.remove('selected');
+            updateSelectedCount(); 
+            renderSelectedCardsTable(); 
+            updatePrizeDisplay();
+            savePersistedCards();
+        }
+        
+        function selectAllCards() { 
+            for(let i=1; i<=totalCards; i++) {
+                if(!selectedCards.has(i)) {
+                    selectedCards.add(i);
+                    const el = document.querySelector(`.card-number[data-card="${i}"]`);
+                    if(el) el.classList.add('selected');
+                }
+            }
+            updateSelectedCount(); 
+            renderSelectedCardsTable();
+            savePersistedCards();
+        }
+        
+        function clearAllCards() { 
+            selectedCards.clear(); 
+            document.querySelectorAll('.card-number').forEach(el => el.classList.remove('selected'));
+            updateSelectedCount(); 
+            renderSelectedCardsTable();
+            savePersistedCards();
+        }
+        
+        // ================= BINGO LOGIC =================
+        function isBingo(grid) {
+            const isMatch = val => (val === '★' || val === 'FREE') || calledNumbersSet.has(parseInt(val));
+            const pattern = document.getElementById('patternInline')?.value || '1';
+            for(let r=0;r<5;r++) if(grid[r].every(isMatch)) return true;
+            for(let c=0;c<5;c++) if(grid.every(row=>isMatch(row[c]))) return true;
+            let d1=true, d2=true;
+            for(let i=0;i<5;i++) { if(!isMatch(grid[i][i])) d1=false; if(!isMatch(grid[i][4-i])) d2=false; }
+            if(d1||d2) return true;
+            if(pattern==='1'||pattern==='13') { const c=[grid[0][0],grid[0][4],grid[4][0],grid[4][4]]; if(c.every(isMatch)) return true; }
+            return false;
+        }
+        
+        function isWinWithLastNumber(grid) {
+            if(gameState.calledNumbers.length===0) return false;
+            const last = gameState.calledNumbers[gameState.calledNumbers.length-1];
+            const isMatch = val => (val==='★'||val==='FREE') || calledNumbersSet.has(parseInt(val));
+            const pattern = document.getElementById('patternInline')?.value || '1';
+            for(let r=0;r<5;r++) if(grid[r].every(isMatch) && grid[r].some(v=>parseInt(v)===last)) return true;
+            for(let c=0;c<5;c++) { const col=grid.map(r=>r[c]); if(col.every(isMatch) && col.some(v=>parseInt(v)===last)) return true; }
+            const d1=grid.map((r,i)=>r[i]), d2=grid.map((r,i)=>r[4-i]);
+            if(d1.every(isMatch) && d1.some(v=>parseInt(v)===last)) return true;
+            if(d2.every(isMatch) && d2.some(v=>parseInt(v)===last)) return true;
+            if(pattern==='1'||pattern==='13') { const c=[grid[0][0],grid[0][4],grid[4][0],grid[4][4]]; if(c.every(isMatch) && c.some(v=>parseInt(v)===last)) return true; }
+            return false;
+        }
+
+        function checkWinningPattern(grid) {
+            const isMatch = val => (val==='★'||val==='FREE') || calledNumbersSet.has(parseInt(val));
+            const patterns = [];
+            for(let r=0;r<5;r++) if(grid[r].every(isMatch)) patterns.push({type:'horizontal',row:r,cells:grid[r].map((_,c)=>({row:r,col:c}))});
+            for(let c=0;c<5;c++) if(grid.every(r=>isMatch(r[c]))) patterns.push({type:'vertical',col:c,cells:grid.map((_,r)=>({row:r,col:c}))});
+            let d1=true, d2=true; const d1c=[], d2c=[];
+            for(let i=0;i<5;i++) { if(!isMatch(grid[i][i])) d1=false; d1c.push({row:i,col:i}); if(!isMatch(grid[i][4-i])) d2=false; d2c.push({row:i,col:4-i}); }
+            if(d1) patterns.push({type:'diag1',cells:d1c}); if(d2) patterns.push({type:'diag2',cells:d2c});
+            return patterns;
+        }
+
+        function renderSpecificCardInModal(grid, highlightWinning=false) {
+            const tbody = document.querySelector('#realCardTable tbody');
+            if(!tbody) return; tbody.innerHTML='';
+            const winningCells = new Set();
+            if(highlightWinning) checkWinningPattern(grid).forEach(p=>p.cells.forEach(c=>winningCells.add(`${c.row}-${c.col}`)));
+            grid.forEach((row, r)=>{
+                const tr = document.createElement('tr');
+                row.forEach((cell, c)=>{
+                    const td = document.createElement('td');
+                    const isFree = cell==='★'||cell==='FREE';
+                    td.textContent = isFree ? '★' : cell;
+                    if(isFree) td.classList.add('matched','free-space');
+                    else if(calledNumbersSet.has(parseInt(cell))) {
+                        td.classList.add('matched');
+                        if(highlightWinning && winningCells.has(`${r}-${c}`)) td.classList.add('blink-win');
+                    } else { td.style.backgroundColor = r%2===0 ? '#fff' : '#5cabff'; td.style.color='#000'; }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= MANUAL CLOSE HELPER =================
+        function closeCardCheckModal() {
+            try {
+                const modalEl = document.getElementById('myModalcard');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+                modalEl.style.display = 'none';
+                document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+            } catch (e) {
+                document.getElementById('myModalcard').style.display = 'none';
+                document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            }
+        }
+
+        // ================= SAFE MODAL SHOW =================
+        function safeShowModal(modalId) {
+            return new Promise((resolve) => {
+                const modalEl = document.getElementById(modalId);
+                if (!modalEl) { console.error('Modal not found'); return resolve(); }
+                
+                if (typeof bootstrap === 'undefined') {
+                    console.warn('Bootstrap not loaded, skipping modal');
+                    return resolve();
+                }
+                
+                try {
+                    let modal = bootstrap.Modal.getInstance(modalEl);
+                    if (!modal) modal = new bootstrap.Modal(modalEl, {keyboard: true, backdrop: true});
+                    modal.show();
+                    resolve();
+                } catch (e) {
+                    console.error('Modal show error:', e);
+                    resolve();
+                }
+            });
+        }
+
+        // ================= CHECK BUTTON HANDLER =================
+        let checkButtonLocked = false;
+
+        async function handleCardCheck() {
+            // License check before any game action
+            if (!_vLd()) {
+                flashError('Ecard_no');
+                return;
+            }
+
+            const emergencyTimeout = setTimeout(() => {
+                console.warn('⚠️ handleCardCheck timeout - recovering');
+                const checkStatus = document.getElementById('check-status');
+                if(checkStatus) checkStatus.innerHTML = '<h3>⚠️ Timeout - please try again</h3>';
+                const btn = document.getElementById('mycheck');
+                if(btn) { btn.disabled = false; }
+                checkButtonLocked = false;
+            }, 5000);
+
+            try {
+                const input = document.getElementById('Ecard_no');
+                if(!input) return;
+                
+                const cardId = parseInt(input.value.trim());
+                if(isNaN(cardId) || cardId<1 || cardId>totalCards) { 
+                    flashError('Ecard_no'); 
+                    input.focus(); 
+                    return; 
+                }
+                if(!selectedCards.has(cardId)) { 
+                    playSoundWithTimeout('notreg').catch(()=>{}); 
+                    return; 
+                }
+                
+                const grid = getCardFromId(cardId);
+                if(!grid) return;
+
+                const cardIdSpan = document.getElementById('check-card-id');
+                const checkStatus = document.getElementById('check-status');
+                const modalContent = document.querySelector('#myModalcard .modal-content');
+                const lockSection = document.getElementById('lock-section');
+                const bingoBtn = document.getElementById('bingo-btn');
+                const mainButtons = document.getElementById('main-buttons');
+
+                if(cardIdSpan) cardIdSpan.textContent = `#${cardId}`;
+                if(checkStatus) checkStatus.innerHTML = `<h3>🔍 Checking card #${cardId}...</h3>`;
+                if(modalContent) modalContent.classList.remove('winner-glow','late-winner-glow');
+                if(lockSection) lockSection.style.display = 'none';
+                if(bingoBtn) bingoBtn.style.display = 'none';
+                if(mainButtons) mainButtons.style.display = 'none';
+
+                renderSpecificCardInModal(grid, false);
+                
+                await safeShowModal('myModalcard');
+                
+                await new Promise(r => setTimeout(r, 100));
+
+                const isWinner = isBingo(grid);
+                if(isWinner) {
+                    const isOnTime = isWinWithLastNumber(grid);
+                    playSoundWithTimeout(isOnTime ? 'winner' : 'late').catch(()=>{});
+                    
+                    if(checkStatus) checkStatus.innerHTML = 
+                        `<h3 style="color:${isOnTime ? '#28a745':'#ff9800'}">
+                        ${isOnTime ? '🎉 ON-TIME BINGO! Winner!' : '⏰ LATE BINGO! Winner'}
+                        </h3>`;
+                    
+                    if(isOnTime) {
+                        modalContent?.classList.add('winner-glow');
+                    } else {
+                        modalContent?.classList.add('late-winner-glow');
+                    }
+                    
+                    if(bingoBtn) bingoBtn.style.display='block';
+                    
+                    if(!isLowEndDevice()) {
+                        startConfetti();
+                    } else {
+                        if(checkStatus) checkStatus.innerHTML += ' 🎊';
+                    }
+                    
+                    const active = [...gameHistory].reverse().find(h=>h.status==='Active');
+                    if(active) { 
+                        active.winnerCard=`#${cardId}`; 
+                        active.status='Finished'; 
+                        localStorage.setItem('gameHistory',JSON.stringify(gameHistory)); 
+                        window.electronAPI.saveData('gameHistory',gameHistory).catch(()=>{}); 
+                    }
+                    renderSpecificCardInModal(grid, true);
+                } else {
+                    playSoundWithTimeout('didntwin').catch(()=>{});
+                    if(checkStatus) checkStatus.innerHTML = `<h3 style="color:#dc3545">❌ Not a Bingo</h3>`;
+                    if(lockSection) lockSection.style.display='block';
+                }
+            } catch(err) {
+                console.error('Check Error:', err);
+                const checkStatus = document.getElementById('check-status');
+                if(checkStatus) checkStatus.innerHTML = '<h3 style="color:#dc3545">⚠️ Error checking card</h3>';
+            } finally {
+                clearTimeout(emergencyTimeout);
+                const btn = document.getElementById('mycheck');
+                if(btn) { btn.disabled = false; }
+                checkButtonLocked = false;
+            }
+        }
+
+        // ================= NAVIGATION FUNCTIONS =================
+        function showSection(sectionId) { 
+            // License check before allowing section navigation
+            if (!_vLd()) return;
+            
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active')); 
+            const t = document.getElementById(sectionId); 
+            if(t) {
+                t.classList.add('active');
+                if(sectionId === 'reg-section') generateCardNumbers(); 
+                if(sectionId === 'report-section') loadReport(); 
+                if(sectionId === 'control-section') loadControl(); 
+                if(sectionId === 'history-section') renderHistory();
+            }
+        }
+        
+        function myFunction() { const x = document.getElementById("topnav"); if(x) x.style.display = x.style.display === "block" ? "none" : "block"; }
+        function logout() { localStorage.removeItem('isLoggedIn'); window.electronAPI.saveData('isLoggedIn', null).catch(()=>{}); location.reload(); }
+        
+        function showNewGameModal() { 
+            // License check
+            if (!_vLd()) return;
+            
+            if(light) { clearInterval(light); light = null; } 
+            gameState.gameActive = false; gameState.calledNumbers = []; calledNumbersSet = new Set(); uniqueRandoms = [];
+            const b = document.getElementById('rand'); if(b){ b.innerText = '--'; b.classList.remove('ball-pulse'); }
+            ['call0','call1','call2','call3','call4'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = '--'; });
+            document.querySelectorAll('.numbox').forEach(n => n.classList.remove('called-number','callnum'));
+            document.querySelectorAll('#bingoTable td.matched').forEach(c => { if(c.textContent !== 'FREE' && c.textContent !== '★') c.classList.remove('matched'); });
+            const sb = document.getElementById('bingoo'); if(sb){ sb.innerHTML = "StartGame"; sb.disabled = false; } 
+            const shb = document.getElementById('shuffle'); if(shb) shb.disabled = false;
+            selectedCards.clear(); savePersistedCards(); generateCardNumbers(); updateSelectedCount(); renderSelectedCardsTable(); renderCard(); initializeNumberGrid(); updatePrizeDisplay(); showSection('reg-section');
+        }
+        
+        function startConfetti() { 
+            const canvas = document.getElementById('canvas'); if(!canvas) return; canvas.style.display = 'block'; const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particles = []; 
+            for(let i = 0; i < (isLowEndDevice() ? 50 : 150); i++) particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, r: Math.random() * 10 + 5, d: Math.random() * 150 + 10, color: `hsl(${Math.random() * 360}, 100%, 50%)`, tilt: Math.random() * 10 - 10, tiltAngle: 0, tiltAngleIncremental: Math.random() * 0.07 + 0.05 }); 
+            function draw() { if(!ctx) return; ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { ctx.beginPath(); ctx.lineWidth = p.r / 2; ctx.strokeStyle = p.color; ctx.moveTo(p.x + p.tilt + p.r / 3, p.y); ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 5); ctx.stroke(); p.tiltAngle += p.tiltAngleIncremental; p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2; p.tilt = Math.sin(p.tiltAngle) * 15; if(p.y > canvas.height){ p.x = Math.random() * canvas.width; p.y = -30; } }); requestAnimationFrame(draw); } 
+            draw(); setTimeout(() => { canvas.style.display = 'none'; }, isLowEndDevice() ? 3000 : 5000); 
+        }
+        
+        function loadReport() { const r = document.getElementById('report-body'); if(r) r.innerHTML = '<tr><td>Demo User</td><td>Addis</td><td>0912345678</td><td>500</td><td>50</td></tr>'; }
+        function loadControl() { const c = document.getElementById('control-body'); if(c) c.innerHTML = '<tr><td>1</td><td>20</td><td>8</td><td>160</td></tr>'; }
+        function renderHistory() { const tbody = document.getElementById('history-body'); if(!tbody) return; tbody.innerHTML = ''; if(gameHistory.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">No history.</td></tr>'; return; } [...gameHistory].reverse().forEach(e => { const tr = document.createElement('tr'); let sc = e.status === 'Finished' ? 'status-finished' : (e.status === 'Active' ? 'status-active' : 'status-pending'); tr.innerHTML = `<td><strong>${e.round}</strong></td><td>${e.date}</td><td>${e.totalMoney} Birr</td><td style="color:#28a745;">${Math.round(e.houseIncome)} Birr</td><td style="color:#0047BB;">${Math.round(e.prize)} Birr</td><td>${e.winnerCard}</td><td class="${sc}">${e.status}</td></tr>`; tbody.appendChild(tr); }); }
+        
+        function startGame() { 
+            // License check
+            if (!_vLd()) return;
+            change(); 
+        }
+        function handleLock() { 
+            // License check
+            if (!_vLd()) return;
+            
+            playGameSound('kickoutSound').catch(()=>{}); const btn = document.getElementById('lockBtn'); if(btn) { btn.innerHTML = '<i class="fas fa-check"></i> Locked'; btn.disabled = true; btn.style.background = '#28a745!important'; } window.electronAPI.log('info', 'Card locked', { cardId: document.getElementById('check-card-id')?.textContent, time: new Date().toISOString() }); closeCardCheckModal(); 
+        }
+        function closeWinnerModal() { const m = document.getElementById('winnerModal'); if(m) { m.classList.add('hidden'); document.querySelectorAll('.modal-backdrop').forEach(b => b.remove()); document.body.style.overflow = ''; document.body.classList.remove('modal-open'); } }
+
+        // ================= GAME CONTROLS =================
+        function synchronizedPop(number, letter) {
+            const ballDiv = document.getElementById('rand'); if(ballDiv) { ballDiv.innerText = `${letter}-${number}`; ballDiv.classList.remove('ball-pulse'); void ballDiv.offsetWidth; ballDiv.classList.add('ball-pulse'); }
+            
+            const gridElement = document.querySelector(`.numbox[numb="${number}"]`);
+            if(gridElement) { 
+                gridElement.classList.remove('callnum','called-number'); 
+                void gridElement.offsetWidth; 
+                gridElement.classList.add('callnum'); 
+                setTimeout(() => { 
+                    gridElement.classList.remove('callnum'); 
+                    gridElement.classList.add('called-number'); 
+                }, 600); 
+            }
+            
+            document.querySelectorAll('#bingoTable td').forEach(cell => { if(parseInt(cell.textContent) === number && cell.textContent !== 'FREE' && cell.textContent !== '★') cell.classList.add('matched'); });
+        }
+        
+        function randomnuber() {
+            // License check during game
+            if (!_vLd()) {
+                if(light) { clearInterval(light); light = null; }
+                gameState.gameActive = false;
+                return;
+            }
+            
+            if(uniqueRandoms.length === 0) { for(let i = 1; i <= max; i++) uniqueRandoms.push(i); shuffleArray(uniqueRandoms); }
+            const number = uniqueRandoms.pop(); const letter = number <= 15 ? 'B' : number <= 30 ? 'I' : number <= 45 ? 'N' : number <= 60 ? 'G' : 'O';
+            synchronizedPop(number, letter);
+            const calls = ['call0','call1','call2','call3','call4']; for(let i = calls.length - 1; i > 0; i--) { const p = document.getElementById(calls[i-1]), c = document.getElementById(calls[i]); if(p && c) c.textContent = p.textContent; }
+            const firstCall = document.getElementById('call0'); if(firstCall) firstCall.textContent = number;
+            gameState.calledNumbers.push(number); calledNumbersSet.add(number); queueNumberSound(number);
+            if(uniqueRandoms.length === 0 && gameState.gameActive) { clearInterval(light); light = null; const btn = document.getElementById('bingoo'); if(btn) btn.innerHTML = "StartGame"; gameState.gameActive = false; }
+        }
+        
+        function change() {
+            // License check
+            if (!_vLd()) return;
+            
+            const sliderVal = document.getElementById("myRange").value; const btn = document.getElementById('bingoo');
+            if(light === null) { gameState.gameActive = true; if(btn) btn.innerHTML = "Stop"; playGameSound('startSound'); if(uniqueRandoms.length === 0) { for(let i = 1; i <= max; i++) uniqueRandoms.push(i); shuffleArray(uniqueRandoms); } light = setInterval(() => { if(gameState.gameActive && _vLd()) randomnuber(); }, sliderVal * 1000); const shuffleBtn = document.getElementById("shuffle"); if(shuffleBtn) shuffleBtn.disabled = true; }
+            else { clearInterval(light); light = null; if(btn) btn.innerHTML = "StartGame"; const shuffleBtn = document.getElementById("shuffle"); if(shuffleBtn) shuffleBtn.disabled = false; gameState.gameActive = false; playGameSound('stopSound'); }
+        }
+        
+        function shuffleArray(arr) { for(let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+        function generateCard() { gameState.cardNumbers = getCardFromId(Math.floor(Math.random() * totalCards) + 1); }
+        function renderCard() { const tbody = document.querySelector('#bingoTable tbody'); if(!tbody) return; tbody.innerHTML = ''; generateCard(); gameState.cardNumbers.forEach(row => { const tr = document.createElement('tr'); row.forEach(cell => { const td = document.createElement('td'); td.textContent = (cell === '★' || cell === 'FREE') ? '★' : cell; if(cell === '★' || cell === 'FREE') td.classList.add('matched'); if(cell !== '★' && cell !== 'FREE' && calledNumbersSet.has(parseInt(cell))) td.classList.add('matched'); tr.appendChild(td); }); tbody.appendChild(tr); }); }
+        function initializeNumberGrid() { const ranges = [{id:'b-numbers',start:1,end:15},{id:'i-numbers',start:16,end:30},{id:'n-numbers',start:31,end:45},{id:'g-numbers',start:46,end:60},{id:'o-numbers',start:61,end:75}]; ranges.forEach(range => { const container = document.getElementById(range.id); if(!container) return; container.innerHTML = ''; for(let i = range.start; i <= range.end; i++) { const numbox = document.createElement('div'); numbox.className = 'numbox'; numbox.textContent = i; numbox.setAttribute('numb', i); if(calledNumbersSet.has(i)) numbox.classList.add('called-number'); container.appendChild(numbox); } }); }
+
+        // ================= DOM READY - ALL EVENT LISTENERS =================
+        $(document).ready(function() {
+            console.log('🎮 GoBingo initialized - 154 Cards | No Alert Messages | Number Pop Animation');
+            
+            // ⚠️ CRITICAL: Check license FIRST before any initialization
+            if (!checkLicense()) {
+                console.warn('⚠️ License expired - application locked');
+                return; // Stop all initialization if expired
+            }
+            
+            loadPersistedCards();
+
+            try {
+                const appInfo = window.electronAPI.getAppInfo();
+                document.getElementById('appVersion').textContent = appInfo.version;
+                if (appInfo.isPackaged) {
+                    document.getElementById('electronTitlebar').style.display = 'flex';
+                    document.body.classList.add('electron-platform');
+                }
+            } catch(e) { console.warn('App info load fallback:', e); }
+
+            window.electronAPI.onMenuNavigate((page) => {
+                if (!_vLd()) return;
+                if(page === 'new-game') showNewGameModal();
+            });
+            window.electronAPI.onShowAbout(() => {});
+            window.electronAPI.onFullscreenChanged(() => {});
+
+            // No login - game loads directly
+            showSection('game-section');
+
+            document.getElementById('navPlayBingo')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('game-section'); });
+            document.getElementById('logoutLink')?.addEventListener('click', function(e) { e.preventDefault(); myFunction(); });
+            document.getElementById('menuLogout')?.addEventListener('click', function(e) { e.preventDefault(); logout(); });
+            document.getElementById('menuReport')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('report-section'); });
+            document.getElementById('menuControl')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('control-section'); });
+            document.getElementById('menuUpload')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('upload-section'); });
+            document.getElementById('menuHistory')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('history-section'); });
+
+            document.getElementById('modalLogout')?.addEventListener('click', function(e) { e.preventDefault(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); logout(); });
+            document.getElementById('modalRegister')?.addEventListener('click', function(e) { e.preventDefault(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); if(_vLd()) showSection('reg-section'); });
+            document.getElementById('modalReport')?.addEventListener('click', function(e) { e.preventDefault(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); if(_vLd()) showSection('report-section'); });
+            document.getElementById('modalUpload')?.addEventListener('click', function(e) { e.preventDefault(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); if(_vLd()) showSection('upload-section'); });
+            document.getElementById('modalHistory')?.addEventListener('click', function(e) { e.preventDefault(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); if(_vLd()) showSection('history-section'); });
+
+            document.getElementById('bingoo')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) change(); });
+            document.getElementById('newgame')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showNewGameModal(); });
+            document.getElementById('shuffle')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) playGameSound('shuffleSound').catch(()=>{}); });
+            
+            document.getElementById('mycheck')?.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // License check
+                if (!_vLd()) {
+                    flashError('Ecard_no');
+                    return;
+                }
+                
+                if (checkButtonLocked) {
+                    this.classList.add('error-shake');
+                    setTimeout(() => this.classList.remove('error-shake'), 300);
+                    return;
+                }
+                checkButtonLocked = true;
+                this.disabled = true;
+                await handleCardCheck();
+            });
+            
+            document.getElementById('registerCardsBtn')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) showSection('reg-section'); });
+
+            document.getElementById('reloadButton')?.addEventListener('click', function(e) { e.preventDefault(); location.reload(); });
+            document.getElementById('myadd')?.addEventListener('click', function(e) { e.preventDefault(); 
+                if (!_vLd()) return;
+                const saved = localStorage.getItem('lastSelectedCards'); if(saved) { JSON.parse(saved).forEach(c => { if(!selectedCards.has(c)) { selectedCards.add(c); const el = document.querySelector(`.card-number[data-card="${c}"]`); if(el) el.classList.add('selected'); } }); } else { for(let i=1; i<=10; i++) { if(!selectedCards.has(i)) { selectedCards.add(i); const el = document.querySelector(`.card-number[data-card="${i}"]`); if(el) el.classList.add('selected'); } } } updateSelectedCount(); renderSelectedCardsTable(); updatePrizeDisplay(); savePersistedCards(); 
+            });
+            document.getElementById('selectAllBtn')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) selectAllCards(); });
+            document.getElementById('clearAllBtn')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) clearAllCards(); });
+            document.getElementById('playTopBtn')?.addEventListener('click', function(e) { e.preventDefault(); 
+                if (!_vLd()) return;
+                const price = document.getElementById('birrInline').value; const pattern = document.getElementById('patternInline').value; if(!price) { flashError('birrInline'); return; } if(selectedCards.size === 0) { flashError('playTopBtn'); return; } const calc = calculatePrize(); gameState.totalMoney = calc.totalMoney; gameState.prizePool = calc.prize; gameState.houseCut = calc.houseCut; gameState.balance -= calc.totalMoney; localStorage.setItem('lastSelectedCards', JSON.stringify(Array.from(selectedCards))); gameHistory.push({ round: gameState.round, date: new Date().toLocaleString(), totalMoney: calc.totalMoney, houseIncome: calc.houseCut, prize: calc.prize, winnerCard: "Pending", status: "Active" }); localStorage.setItem('gameHistory', JSON.stringify(gameHistory)); window.electronAPI.saveData('gameHistory', gameHistory).catch(()=>{}); gameState.round++; localStorage.setItem('currentRound', gameState.round); const rr = document.getElementById('reg-round'), mr = document.getElementById('modalRound'); if(rr) rr.textContent = gameState.round; if(mr) mr.textContent = gameState.round; document.getElementById('amount').textContent = `${gameState.balance} Birr`; document.getElementById('amount1').textContent = Math.round(calc.prize); document.getElementById('modalPrize').textContent = Math.round(calc.prize); document.getElementById('modalTotal').textContent = calc.totalMoney; const pt = {'1':'Any One Line','2':'Two Lines','3':'Vertical','4':'Horizontal','5':'T','6':'Rev T','7':'X','8':'L','9':'Rev L','10':'Half Up','11':'Half Down','12':'Full House','13':'Corners Only'}; document.getElementById('img').src = `https://via.placeholder.com/400x300/0a2f6c/ffffff?text=${encodeURIComponent(pt[pattern]||'Pattern')}`; showSection('game-section'); 
+            });
+
+            document.getElementById('mybtn')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) { startGame(); const modal = bootstrap.Modal.getInstance(document.getElementById('myModal')); if(modal) modal.hide(); } });
+            
+            document.getElementById('lockBtn')?.addEventListener('click', handleLock);
+            ['goodbingo','notbingo','addbingo1','newbingo','addbingo'].forEach(id => { document.getElementById(id)?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) closeCardCheckModal(); }); });
+            document.getElementById('newgame2')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) { showNewGameModal(); closeCardCheckModal(); } });
+            document.getElementById('modalCloseBtn')?.addEventListener('click', closeCardCheckModal);
+            
+            document.getElementById('myModalcard')?.addEventListener('click', function(e) { if(e.target === this && _vLd()) closeCardCheckModal(); });
+            
+            document.addEventListener('keydown', function(e) { if(e.key === 'Escape') { const modalEl = document.getElementById('myModalcard'); if(modalEl && modalEl.style.display !== 'none' && _vLd()) closeCardCheckModal(); } });
+            document.getElementById('closeWinnerBtn')?.addEventListener('click', function(e) { e.preventDefault(); closeWinnerModal(); });
+
+            document.getElementById('clearHistoryBtn')?.addEventListener('click', function(e) { e.preventDefault(); if(_vLd()) { gameHistory = []; localStorage.removeItem('gameHistory'); window.electronAPI.saveData('gameHistory', []).catch(()=>{}); renderHistory(); } });
+            document.getElementById('uploadBtn')?.addEventListener('click', function(e) { e.preventDefault(); if(!_vLd()) return; const file = document.getElementById('balanceFile').files[0]; if(!file) return; console.log(`Uploading ${file.name}...`); });
+
+            document.getElementById('manualGameType')?.addEventListener('change', function() { if(this.checked) { document.getElementById('automaticGameType').checked = false; gameState.gameType = 'Manual'; } });
+            document.getElementById('automaticGameType')?.addEventListener('change', function() { if(this.checked) { document.getElementById('manualGameType').checked = false; gameState.gameType = 'Automatic'; } });
+
+            const slider = document.getElementById("myRange"); const output = document.getElementById("demo");
+            if(slider && output) { output.innerHTML = slider.value; gameState.speed = slider.value; slider.oninput = function() { output.innerHTML = this.value; gameState.speed = this.value; }; }
+
+            initializeNumberGrid(); renderCard();
+            const regRound = document.getElementById('reg-round'); const modalRound = document.getElementById('modalRound');
+            if(regRound) regRound.textContent = gameState.round; if(modalRound) modalRound.textContent = gameState.round;
+            
+            if(document.getElementById('reg-section').classList.contains('active')) generateCardNumbers();
+            initInlineConfig();
+
+            document.getElementById('minimizeBtn')?.addEventListener('click', ()=> window.electronAPI.windowControls.minimize());
+            document.getElementById('maximizeBtn')?.addEventListener('click', async ()=>{
+                const isMax = await window.electronAPI.windowControls.isMaximized();
+                isMax ? window.electronAPI.windowControls.unmaximize() : window.electronAPI.windowControls.maximize();
+                document.querySelector('#maximizeBtn i').className = isMax ? 'fas fa-square' : 'fas fa-square-minus';
+            });
+            document.getElementById('closeBtn')?.addEventListener('click', ()=> window.electronAPI.windowControls.close());
+            
+            console.log('✅ All buttons initialized - 154 Cards | No Alert Messages | Number Pop Animation Active');
+            console.log(`📅 License: Activated ${LICENSE_ACTIVATION_DATE}, Expires ${LICENSE_EXPIRY_DATE.toLocaleDateString()}`);
+        });
+    </script>
+</body>
+</html>
